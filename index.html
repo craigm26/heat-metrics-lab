@@ -225,10 +225,26 @@
 
     <!-- Ch 7 — Try it (sandbox + live NWS). All three live. -->
     <section class="chapter chapter--centerpiece" data-chapter="7" data-act="application" data-metric="all"
-             data-readings='{"air_temp_c":42.2,"hi_c":41.83,"wbgt_c":30.88}'>
-      <div class="chapter__inner">
+             data-readings='{"air_temp_c":35,"hi_c":40.6,"wbgt_c":27.8}'>
+      <div class="chapter__inner chapter__inner--centerpiece">
         <h2 class="chapter__title">Try it</h2>
-        <p class="chapter__placeholder">Sandbox calculator + live api.weather.gov panel land in Phase 5.</p>
+        <p class="chapter__lede">Two ways to ground the divergence in your body. Drag the sliders manually, or pull current conditions for a location.</p>
+        <div class="ch7-mode-toggle" role="tablist" aria-label="Calculator mode">
+          <button type="button" role="tab" aria-selected="true"  data-mode="manual"   class="is-active">Manual sliders</button>
+          <button type="button" role="tab" aria-selected="false" data-mode="location">My location</button>
+        </div>
+        <div id="sandbox"  data-component="sandbox-calculator"></div>
+        <div id="live-nws" data-component="live-nws-panel" hidden></div>
+
+        <p>Both modes compute the same three metrics from the same Python-and-JS formulas that drive the rest of the site. In manual mode, you pick the inputs. In location mode, NWS reports the current air temperature, dewpoint (which we convert to RH), and wind for the gridpoint nearest your lat-lng; we estimate solar load from cloud cover and time of day.</p>
+
+        <p>What sliders to play with first: hold air temperature at 35 °C and slide RH from 20% to 80%. Watch the heat index move dramatically while WBGT moves moderately — humidity dominates the perceived load. Now hold RH at 50% and slide solar from 0 to 1000 W/m². Watch WBGT rise from a "mild" reading to a heavy-work warning zone while air temperature and heat index stay flat. The wall thermometer didn't notice the sun came out.</p>
+
+        <p>In location mode, NWS doesn't directly report solar — we approximate it from cloud cover plus the sun's elevation at your time and place. That's an estimate, not a measurement. An actual jobsite reading would come from a calibrated WBGT meter sited per ISO 7243. The site reading is what matters for compliance; this panel is for orientation.</p>
+
+        <aside class="side-dispatch">
+          Your inspector's reading at your jobsite will not match this. NWS observations are sited per WMO standard — 5 ft above ground, shaded, ventilated, away from radiant surfaces. Your jobsite WBGT measured per ACGIH may differ by several degrees, depending on what surface the worker is standing on, what they're wearing, and how much radiant load the local environment is throwing at them. The site reading is what counts for compliance. <cite data-source="iso-7243">ISO 7243</cite> <cite data-source="acgih-tlv">ACGIH TLV</cite> <cite data-source="wmo-cimo">WMO-No. 8</cite>
+        </aside>
       </div>
     </section>
 
