@@ -1,0 +1,27 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.uv-cache/
+
+# Node
+node_modules/
+
+# Build artifacts that should NOT be committed
+# (NOTE: data/ IS committed — that's the whole point)
+dist/
+*.log
+
+# Anti-Antigravity-key-leak (memory rule)
+scripts/mcp_client*.py
+scripts/generate_*.py
+scripts/*_client.py
