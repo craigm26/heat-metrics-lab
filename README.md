@@ -44,7 +44,12 @@ Live at **<https://heat-metrics-lab.pages.dev/>** (pending Phase 0 completion an
 
 ## How to deploy it
 
-The site auto-deploys to **Cloudflare Pages** via `.github/workflows/deploy.yml` on every push to `main` (one-time operator setup of Cloudflare API token required).
+The site auto-deploys to **Cloudflare Pages** via `.github/workflows/deploy.yml` on every push to `master`. One-time operator setup, under repo Settings → Secrets and variables → Actions:
+
+- `CLOUDFLARE_API_TOKEN` — create at Cloudflare dashboard → My Profile → API Tokens, using the **Cloudflare Pages — Edit** template (or a custom token with `Account → Cloudflare Pages → Edit` permission scoped to this account).
+- `CLOUDFLARE_ACCOUNT_ID` — visible in the right sidebar of any page in the Cloudflare dashboard.
+
+If either secret is missing the deploy job fails fast with an explicit message before invoking Wrangler.
 
 ## License
 
