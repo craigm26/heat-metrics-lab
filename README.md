@@ -44,7 +44,14 @@ Live at **<https://heat-metrics-lab.pages.dev/>** (pending Phase 0 completion an
 
 ## How to deploy it
 
-The site auto-deploys to **Cloudflare Pages** via `.github/workflows/deploy.yml` on every push to `main` (one-time operator setup of Cloudflare API token required).
+Deploys are local-only — push from the operator's machine via Wrangler:
+
+```sh
+npx wrangler login                                                # one-time
+npx wrangler pages deploy . --project-name=heat-metrics-lab --branch=master
+```
+
+No GitHub Actions deploy workflow; the only CI check on this repo is `drift-check.yml` (JS-vs-Python heat-index parity).
 
 ## License
 
