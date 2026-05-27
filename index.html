@@ -147,9 +147,27 @@
          Real values come from data/scenarios/phoenix-aug-12pm.json: T=42.2°C, HI=41.83°C, WBGT_out=30.88°C -->
     <section class="chapter chapter--centerpiece" data-chapter="4" data-act="divergence" data-metric="all"
              data-readings='{"air_temp_c":42.2,"hi_c":41.83,"wbgt_c":30.88}'>
-      <div class="chapter__inner">
+      <div class="chapter__inner chapter__inner--centerpiece">
         <h2 class="chapter__title">Same day, three numbers</h2>
-        <p class="chapter__placeholder">Scenario flipper lands in Phase 4.</p>
+        <p class="chapter__lede">Five real moments. Same body, same week, different metrics. Watch which number drives the call.</p>
+        <div id="scenario-flipper" data-component="scenario-flipper"></div>
+
+        <p>Each of the five chips above represents a documented, hand-curated moment from real conditions. The numbers are not estimates of a "typical" summer day — they are specific readings from specific places and times. What unifies them is that all three metrics are live, and none of them agree.</p>
+
+        <p>Phoenix at noon and Houston at dawn have almost nothing in common. Phoenix's desert air is 14 °C hotter, but humidity sits at 18% — evaporation works. Houston's air reaches only 28 °C, but dawn humidity peaks near 92%. The wet bulb barely drops. WBGT for Phoenix sits roughly 11 °C below air temperature; WBGT for Houston sits less than 1 °C below it. Humidity shapes how much of the heat budget evaporation can carry.</p>
+
+        <p>Yuma tells the same dry-desert story at higher intensity: 44 °C air, 14% RH, full midday sun. The heat index shows 42.65 °C — nearly in agreement with the thermometer, because the heat index correction for very dry air is minimal. WBGT reaches 31.05 °C. All three metrics point the same direction. In conditions this extreme, the disagreement between the numbers is small — all three say stop work.</p>
+
+        <p>The indoor warehouse case is harder to read from a weather app. The air thermometer reads 29.4 °C. The heat index — 32.63 °C — is modestly elevated. Neither number triggers instinct. But the indoor WBGT, computed from wet-bulb temperature with zero air movement and 65% relative humidity, reaches 25.8 °C. That crosses NIOSH's moderate-work threshold. The wall thermometer says "fine." The working body says "I am losing the cooling race." The gap between Heat Index and WBGT here is not noise — it is the cost of assuming outdoor wind corrections apply inside a sealed building.</p>
+
+        <p>The Lytton, BC case on June 29, 2021 completes the picture from the opposite direction. Air reached 49.6 °C — beyond any recognized work standard. Yet WBGT at 34.31 °C "only" hits the highest documented occupational threshold. Dry air — 12% RH — keeps wet-bulb suppressed even when air temperature is lethal. Air temperature is the screaming warning here; WBGT lags because the physics of evaporation haven't fully collapsed. This is why no single metric is the universal oracle.</p>
+
+        <p>Flip through all five scenarios. Three metrics. Five situations. No two moments where all three reach the same conclusion at the same time.</p>
+
+        <aside class="side-dispatch">
+          The indoor warehouse case is the most expensive to get wrong. Air thermometer shows 29.4 °C, heat index agrees — both suggest manageable conditions. Indoor WBGT measures 25.8 °C with no air movement: at the edge of NIOSH's moderate-work threshold. An employer relying on weather-app temperature alone would miss the call entirely. ACGIH TLV documentation contains published warehouse heat-stress case studies. <cite data-source="niosh-2016-106">NIOSH 2016-106 §6</cite> <cite data-source="acgih-tlv">ACGIH TLV documentation</cite>
+        </aside>
+
       </div>
     </section>
 
