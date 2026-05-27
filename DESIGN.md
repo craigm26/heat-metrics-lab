@@ -14,9 +14,7 @@
 
 5. **Visualization ≠ recommendation.** The page shows three numbers and links to OSHA/NIOSH guidance. It does not generate personalized safety advice. A disclaimer block on Ch 0 and in the footer are load-bearing.
 
-6. **Mobile first; reduced motion honored.** 44×44 px touch targets minimum. All scroll-driven animations have a static fallback when `prefers-reduced-motion: reduce`. Chapters work on 360×640 viewport.
-
-7. **Reduced motion is honored.** When a user sets `prefers-reduced-motion: reduce`, all scroll-driven and time-driven animations snap to their static end state.
+6. **Mobile first; reduced motion is honored.** 44×44 px touch targets minimum. When a user sets `prefers-reduced-motion: reduce`, all scroll-driven and time-driven animations snap to their static end state. Chapters work on 360×640 viewport.
 
 ## Visual system
 

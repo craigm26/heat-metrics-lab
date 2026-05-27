@@ -10,13 +10,13 @@ A single, vanilla-HTML scrollytelling page that walks readers through what three
 
 | Phase | Title | Key deliverables | Depends on |
 |-------|-------|---|---|
-| [Phase 0](./docs/superpowers/plans/2026-05-27-heat-metrics-lab.md#phase-0--bootstrap) | Bootstrap | Scaffold, config, foundational docs, empty page deploying | — |
-| [Phase 1](./docs/superpowers/plans/2026-05-27-heat-metrics-lab.md#phase-1--formulas--drift-gate-tdd) | Formulas + Drift Gate | Heat Index + WBGT JS/Python, 12-case reference table, CI gate | Phase 0 |
-| [Phase 2](./docs/superpowers/plans/2026-05-27-heat-metrics-lab.md#phase-2--scrollytelling-skeleton) | Scrollytelling skeleton | HTML structure, scroll triggers, IntersectionObserver, base styling | Phases 0, 1 |
-| [Phase 3](./docs/superpowers/plans/2026-05-27-heat-metrics-lab.md#phase-3--act-i-anatomy-ch-03) | Act I: Anatomy (Ch 0–3) | Chapters 0–3 prose, diagrams, citations; three-number strip | Phases 0–2 |
-| [Phase 4](./docs/superpowers/plans/2026-05-27-heat-metrics-lab.md#phase-4--act-ii-divergence-ch-46) | Act II: Divergence (Ch 4–6) | Ch 4 scenario flipper, Ch 5 divergence map, Ch 6 blind-spot cards | Phases 0–2 |
-| [Phase 5](./docs/superpowers/plans/2026-05-27-heat-metrics-lab.md#phase-5--act-iii-application-ch-78) | Act III: Application (Ch 7–8) | Ch 7 sandbox + live NWS, Ch 8 practitioner chapter | Phases 0–2 |
-| [Phase 6](./docs/superpowers/plans/2026-05-27-heat-metrics-lab.md#phase-6--polish--devrel) | Polish + DevRel | CSS refinement, a11y audit, visual regression, comparison post | All prior phases |
+| [Phase 0](./docs/superpowers/plans/2026-05-27-heat-metrics-lab.md) | Bootstrap | Scaffold, config, foundational docs, empty page deploying | — |
+| [Phase 1](./docs/superpowers/plans/2026-05-27-heat-metrics-lab.md) | Formulas + Drift Gate (TDD) | Heat Index + WBGT JS/Python, 12-case reference table, CI gate | Phase 0 |
+| [Phase 2](./docs/superpowers/plans/2026-05-27-heat-metrics-lab.md) | Scrollytelling Skeleton | HTML structure, scroll triggers, IntersectionObserver, base styling | Phases 0, 1 |
+| [Phase 3](./docs/superpowers/plans/2026-05-27-heat-metrics-lab.md) | Act I Content + Diagrams (Ch 0–3) | Chapters 0–3 prose, diagrams, citations; three-number strip | Phases 0–2 |
+| [Phase 4](./docs/superpowers/plans/2026-05-27-heat-metrics-lab.md) | Act II Interactives (Ch 4–6) | Ch 4 scenario flipper, Ch 5 divergence map, Ch 6 blind-spot cards | Phases 0–2 |
+| [Phase 5](./docs/superpowers/plans/2026-05-27-heat-metrics-lab.md) | Act III Interactives + Practitioner (Ch 7–8) | Ch 7 sandbox + live NWS, Ch 8 practitioner chapter | Phases 0–2 |
+| [Phase 6](./docs/superpowers/plans/2026-05-27-heat-metrics-lab.md) | Polish + DevRel A/B | CSS refinement, a11y audit, visual regression, comparison post | All prior phases |
 
 **Parallel opportunities:** Phases 3, 4, 5 can each be implemented independently in a separate worktree by parallel subagents once Phases 0–2 land. Phase 6 sequences after all three acts ship.
 
