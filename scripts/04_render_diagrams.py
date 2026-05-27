@@ -3,6 +3,7 @@
 # Each render_* function writes one SVG into data/diagrams/.
 # Run all: `uv run --project scripts python scripts/04_render_diagrams.py`
 # Run one: `uv run --project scripts python scripts/04_render_diagrams.py --target NAME`
+# Run with unit: `uv run --project scripts python scripts/04_render_diagrams.py --unit all`
 import argparse
 import sys
 from pathlib import Path
@@ -49,9 +50,13 @@ plt.rcParams.update({
 #   - Layering: box outline dominant (INK), louvers recede (INK_SOFT), arrows mid-weight
 #   - Data is the design: the screen itself carries all the information
 #   - Eraser test: every element earns its ink (no decorative fills, no wood grain)
+#
+# NOTE: this diagram has no numeric temperature labels — it is a structural
+# illustration only. Both unit variants are therefore identical. Both files
+# are still emitted so the toggle swap logic works uniformly.
 # ---------------------------------------------------------------------------
 
-def render_stevenson_screen():
+def render_stevenson_screen(unit="c"):
     fig, ax = plt.subplots(figsize=(7, 5))
     ax.set_aspect("equal")
     ax.set_axis_off()
@@ -169,7 +174,7 @@ def render_stevenson_screen():
     ax.set_xlim(bx - margin_x, bx + bw + margin_x)
     ax.set_ylim(post_y - 0.6, by + bh + 0.9)
 
-    fig.savefig(OUT / "stevenson-screen.svg", format="svg",
+    fig.savefig(OUT / f"stevenson-screen-{unit}.svg", format="svg",
                 bbox_inches="tight", pad_inches=0.25)
     plt.close(fig)
 
@@ -177,93 +182,134 @@ def render_stevenson_screen():
 # ---------------------------------------------------------------------------
 # Task 3.2 — NWS Heat-index nomogram
 # Tufte principles applied:
-#   - Range-frame: x-axis spans 80–115 °F, y-axis spans 10–100% (data extents only)
+#   - Range-frame: axes span data extents only
 #   - Contour lines (not contourf fill) to keep data-ink high
 #   - Two annotated comparison points are the argument — visually anchored
 #   - Top/right spines removed; contour labels in INK_SOFT
+#
+# Unit variants:
+#   °F (default / NWS convention): grid in °F, xlim 80–115, contours 80–140 step 5 °F
+#   °C: grid in °C, xlim 27–46, contours 25–60 step 2.5 °C; anchor at 35 °C / 30 & 75% RH
 # ---------------------------------------------------------------------------
 
-def render_heat_index_nomogram():
-    # Build the grid in °F for the NWS domain
-    temps_f = np.arange(80, 116, 1)          # 80 to 115 inclusive
-    rhs = np.arange(10, 101, 5)              # 10 to 100 inclusive
-
-    # Compute heat index on the grid (convert to °F at render time)
-    T_grid, RH_grid = np.meshgrid(temps_f, rhs)
-    HI_grid = np.zeros_like(T_grid, dtype=float)
-    for i, rh in enumerate(rhs):
-        for j, tf in enumerate(temps_f):
-            tc = (tf - 32) * 5 / 9
-            hi_c = heat_index_c(tc, rh)
-            HI_grid[i, j] = hi_c * 9 / 5 + 32
-
-    # Contour levels at every 5 °F from 80 to 140
-    levels = np.arange(80, 141, 5)
-
+def render_heat_index_nomogram(unit="c"):
     fig, ax = plt.subplots(figsize=(8, 6))
     fig.patch.set_facecolor(PAPER)
     ax.set_facecolor(PAPER)
 
-    # Contour lines — HEAT_INDEX color, moderate weight (not fill)
-    cs = ax.contour(
-        T_grid, RH_grid, HI_grid,
-        levels=levels,
-        colors=HEAT_INDEX,
-        linewidths=0.9,
-        alpha=0.85,
-    )
-    ax.clabel(cs, levels=levels[::2], inline=True, fontsize=7.5,
-              fmt="%d °F", colors=INK_SOFT)
+    rhs = np.arange(10, 101, 5)   # 10–100% RH, shared by both units
 
-    # ── Range-frame: axes span only the data extent
-    # Remove top + right spines (Tufte open frame)
+    if unit == "f":
+        # ── °F variant — NWS native domain
+        temps_f = np.arange(80, 116, 1)    # 80–115 °F inclusive
+        T_grid, RH_grid = np.meshgrid(temps_f, rhs)
+        HI_grid = np.zeros_like(T_grid, dtype=float)
+        for i, rh in enumerate(rhs):
+            for j, tf in enumerate(temps_f):
+                tc = (tf - 32) * 5 / 9
+                hi_c = heat_index_c(tc, rh)
+                HI_grid[i, j] = hi_c * 9 / 5 + 32
+
+        levels = np.arange(80, 141, 5)
+
+        cs = ax.contour(
+            T_grid, RH_grid, HI_grid,
+            levels=levels,
+            colors=HEAT_INDEX,
+            linewidths=0.9,
+            alpha=0.85,
+        )
+        ax.clabel(cs, levels=levels[::2], inline=True, fontsize=7.5,
+                  fmt="%d °F", colors=INK_SOFT)
+
+        ax.set_xlim(80, 115)
+        ax.set_ylim(10, 100)
+        ax.set_xlabel("Air temperature (°F)", fontsize=9, color=INK_SOFT, labelpad=6)
+
+        # Annotated comparison points in °F
+        pt1_t, pt1_rh = 95.0, 30.0
+        pt2_t, pt2_rh = 95.0, 75.0
+        pt1_hi = heat_index_c((pt1_t - 32) * 5 / 9, pt1_rh) * 9 / 5 + 32
+        pt2_hi = heat_index_c((pt2_t - 32) * 5 / 9, pt2_rh) * 9 / 5 + 32
+
+        ann1_text = f"95 °F, 30% RH\n→ HI {pt1_hi:.0f} °F"
+        ann2_text = f"95 °F, 75% RH\n→ HI {pt2_hi:.0f} °F"
+        ann1_xy  = (pt1_t, pt1_rh)
+        ann2_xy  = (pt2_t, pt2_rh)
+        ann1_txt = (103, 22)
+        ann2_txt = (84, 88)
+
+    else:
+        # ── °C variant — grid computed directly in °C
+        # x-range covers ~27–46 °C (= 80–115 °F) with 0.5 °C resolution
+        temps_c = np.arange(27, 46.5, 0.5)
+        T_grid, RH_grid = np.meshgrid(temps_c, rhs)
+        HI_grid = np.zeros_like(T_grid, dtype=float)
+        for i, rh in enumerate(rhs):
+            for j, tc in enumerate(temps_c):
+                HI_grid[i, j] = heat_index_c(tc, rh)
+
+        levels = np.arange(25, 61, 2.5)
+
+        cs = ax.contour(
+            T_grid, RH_grid, HI_grid,
+            levels=levels,
+            colors=HEAT_INDEX,
+            linewidths=0.9,
+            alpha=0.85,
+        )
+        ax.clabel(cs, levels=levels[::2], inline=True, fontsize=7.5,
+                  fmt="%g °C", colors=INK_SOFT)
+
+        ax.set_xlim(27, 46)
+        ax.set_ylim(10, 100)
+        ax.set_xlabel("Air temperature (°C)", fontsize=9, color=INK_SOFT, labelpad=6)
+
+        # Annotated comparison points in °C (35 °C ≈ 95 °F)
+        pt1_t, pt1_rh = 35.0, 30.0
+        pt2_t, pt2_rh = 35.0, 75.0
+        pt1_hi = heat_index_c(pt1_t, pt1_rh)
+        pt2_hi = heat_index_c(pt2_t, pt2_rh)
+
+        ann1_text = f"35 °C, 30% RH\n→ HI {pt1_hi:.0f} °C"
+        ann2_text = f"35 °C, 75% RH\n→ HI {pt2_hi:.0f} °C"
+        ann1_xy  = (pt1_t, pt1_rh)
+        ann2_xy  = (pt2_t, pt2_rh)
+        # Place text labels in chart-coordinate space (°C x-axis)
+        ann1_txt = (38, 22)
+        ann2_txt = (28, 88)
+
+    # ── Shared styling (both units) ──────────────────────────────────────────
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
     ax.spines["left"].set_color(INK_FAINT)
     ax.spines["bottom"].set_color(INK_FAINT)
 
-    # Tighten axis limits to exact data range
-    ax.set_xlim(80, 115)
-    ax.set_ylim(10, 100)
-
-    # Tick styling
     ax.tick_params(axis="both", labelsize=8, color=INK_FAINT, length=3)
     for label in ax.get_xticklabels() + ax.get_yticklabels():
         label.set_color(INK_SOFT)
 
-    ax.set_xlabel("Air temperature (°F)", fontsize=9, color=INK_SOFT, labelpad=6)
     ax.set_ylabel("Relative humidity (%)", fontsize=9, color=INK_SOFT, labelpad=6)
 
-    # ── Annotated comparison points — these are the argument of the chart.
-    # Values computed at render time from the same function, so they match contours.
-    pt1_t = 95.0
-    pt1_rh = 30.0
-    pt2_t = 95.0
-    pt2_rh = 75.0
-    pt1_hi = heat_index_c((pt1_t - 32) * 5 / 9, pt1_rh) * 9 / 5 + 32
-    pt2_hi = heat_index_c((pt2_t - 32) * 5 / 9, pt2_rh) * 9 / 5 + 32
+    ax.plot(ann1_xy[0], ann1_xy[1], "o", color=INK, markersize=6, zorder=5)
+    ax.plot(ann2_xy[0], ann2_xy[1], "o", color=INK, markersize=6, zorder=5)
 
-    # Point markers — dominant in INK
-    ax.plot(pt1_t, pt1_rh, "o", color=INK, markersize=6, zorder=5)
-    ax.plot(pt2_t, pt2_rh, "o", color=INK, markersize=6, zorder=5)
-
-    # Leader lines + boxed labels
     box_style = dict(
         boxstyle="round,pad=0.3", facecolor=PAPER, edgecolor=INK_SOFT, linewidth=0.8
     )
     ax.annotate(
-        f"95 °F, 30% RH\n→ HI {pt1_hi:.0f} °F",
-        xy=(pt1_t, pt1_rh),
-        xytext=(103, 22),
+        ann1_text,
+        xy=ann1_xy,
+        xytext=ann1_txt,
         fontsize=7.5, color=INK,
         arrowprops=dict(arrowstyle="-", color=INK_SOFT, linewidth=0.9),
         bbox=box_style,
         ha="left",
     )
     ax.annotate(
-        f"95 °F, 75% RH\n→ HI {pt2_hi:.0f} °F",
-        xy=(pt2_t, pt2_rh),
-        xytext=(84, 88),
+        ann2_text,
+        xy=ann2_xy,
+        xytext=ann2_txt,
         fontsize=7.5, color=INK,
         arrowprops=dict(arrowstyle="-", color=INK_SOFT, linewidth=0.9),
         bbox=box_style,
@@ -277,7 +323,7 @@ def render_heat_index_nomogram():
     )
 
     fig.tight_layout()
-    fig.savefig(OUT / "heat-index-nomogram.svg", format="svg",
+    fig.savefig(OUT / f"heat-index-nomogram-{unit}.svg", format="svg",
                 bbox_inches="tight", pad_inches=0.2)
     plt.close(fig)
 
@@ -289,9 +335,13 @@ def render_heat_index_nomogram():
 #   - Confection: three thermometers + formula + labels integrated in one composition
 #   - Words, numbers, images integrated — formula adjacent to diagram, not below it
 #   - No axes, no grid — this is an explanatory illustration
+#
+# NOTE: this diagram uses only symbolic labels (Td, Tnwb, Tg) with no numeric
+# temperature readings. Both unit variants are therefore identical. Both files
+# are still emitted so the toggle swap logic works uniformly.
 # ---------------------------------------------------------------------------
 
-def render_three_thermometer_rig():
+def render_three_thermometer_rig(unit="c"):
     fig, ax = plt.subplots(figsize=(7, 5))
     ax.set_aspect("equal")
     ax.set_axis_off()
@@ -385,7 +435,7 @@ def render_three_thermometer_rig():
     ax.set_xlim(-4.0, 4.0)
     ax.set_ylim(formula_y - 0.4, stem_top + 1.1)
 
-    fig.savefig(OUT / "three-thermometer-rig.svg", format="svg",
+    fig.savefig(OUT / f"three-thermometer-rig-{unit}.svg", format="svg",
                 bbox_inches="tight", pad_inches=0.2)
     plt.close(fig)
 
@@ -397,6 +447,10 @@ def render_three_thermometer_rig():
 #   - Words, numbers, images integrated: citation embedded in figure, not below
 #   - Layering: dark text on cream cells; "stop" row in WBGT oxblood signals ceiling
 #   - Eraser test: hairline grid only; no box borders, no shadows, no decorative fills
+#
+# Unit variants:
+#   °C (default / NIOSH convention): WBGT column header "WBGT °C"; bands in °C
+#   °F: header "WBGT °F"; band labels converted (×9/5+32, 1 decimal); minutes unchanged
 # ---------------------------------------------------------------------------
 
 # Severity-gradient palette for data rows — extends the brand PAPER ramp toward
@@ -410,8 +464,27 @@ SEV_TINTS = (
 )
 
 
-def render_work_rest_table():
-    """NIOSH 2016-106 §6 work-rest table: WBGT °C × work intensity → minutes of work per hour.
+def _c_band_to_f(band_c: str) -> str:
+    """Convert a WBGT band string from °C to °F (1 decimal precision).
+
+    Handles formats: "< 25.0", "25.0–26.7", "≥ 32.2".
+    The work-minutes values in body cells are NOT touched by this function.
+    """
+    # Map each known °C band to its °F equivalent.
+    # Calculated as (c * 9/5 + 32), rounded to 1 decimal.
+    _table = {
+        "< 25.0":     "< 77.0",
+        "25.0–26.7":  "77.0–80.1",
+        "26.7–28.3":  "80.1–82.9",
+        "28.3–30.0":  "82.9–86.0",
+        "30.0–32.2":  "86.0–90.0",
+        "≥ 32.2":     "≥ 90.0",
+    }
+    return _table.get(band_c, band_c)
+
+
+def render_work_rest_table(unit="c"):
+    """NIOSH 2016-106 §6 work-rest table: WBGT × work intensity → minutes of work per hour.
 
     Source values from NIOSH 2016-106 Table 6-1 (REL line, acclimatized worker).
     The matrix isn't a precise reproduction — it's a clean reading-version that
@@ -429,8 +502,12 @@ def render_work_rest_table():
     # Header row + 6 data rows.
     # Columns: WBGT range | Light | Moderate | Heavy | Very Heavy
     # Each cell value is minutes of work per hour at that band.
-    header = ["WBGT °C", "Light", "Moderate", "Heavy", "Very heavy"]
-    rows = [
+    # The WBGT column header and band labels change with unit; work minutes do not.
+    wbgt_unit_label = "WBGT °C" if unit == "c" else "WBGT °F"
+    header = [wbgt_unit_label, "Light", "Moderate", "Heavy", "Very heavy"]
+
+    # °C source bands (NIOSH 2016-106 Table 6-1)
+    rows_c = [
         ("< 25.0",     "60", "60", "60", "60", None),
         ("25.0–26.7",  "60", "60", "45", "30", None),
         ("26.7–28.3",  "60", "45", "30", "30", None),
@@ -438,6 +515,15 @@ def render_work_rest_table():
         ("30.0–32.2",  "30", "15", "—",  "—",  None),
         ("≥ 32.2",     "Stop work — exceeds NIOSH ceiling", None, None, None, "stop"),
     ]
+
+    # Build the displayed rows: convert WBGT band labels if °F, leave work minutes as-is
+    if unit == "f":
+        rows = [
+            (_c_band_to_f(r[0]),) + r[1:]
+            for r in rows_c
+        ]
+    else:
+        rows = rows_c
 
     n_cols = len(header)
     n_rows = len(rows) + 1  # +1 for header
@@ -491,7 +577,7 @@ def render_work_rest_table():
             fontsize=9, color=INK_FAINT, fontfamily="serif", style="italic")
 
     fig.subplots_adjust(left=0.02, right=0.98, bottom=0.10, top=0.95)
-    fig.savefig(OUT / "work-rest-table.svg", format="svg", bbox_inches="tight")
+    fig.savefig(OUT / f"work-rest-table-{unit}.svg", format="svg", bbox_inches="tight")
     plt.close(fig)
 
 
@@ -502,12 +588,21 @@ TARGETS = {
     "work-rest-table": render_work_rest_table,
 }
 
+UNITS = ["c", "f"]
+
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--target", choices=list(TARGETS) + ["all"], default="all")
+    p.add_argument("--target", choices=list(TARGETS) + ["all"], default="all",
+                   help="Which diagram to render (default: all)")
+    p.add_argument("--unit", choices=UNITS + ["all"], default="all",
+                   help="Temperature unit variant to write: c, f, or all (default: all)")
     args = p.parse_args()
+
     keys = list(TARGETS) if args.target == "all" else [args.target]
+    units = UNITS if args.unit == "all" else [args.unit]
+
     for k in keys:
-        TARGETS[k]()
-        print(f"wrote data/diagrams/{k}.svg")
+        for u in units:
+            TARGETS[k](u)
+            print(f"wrote data/diagrams/{k}-{u}.svg")
