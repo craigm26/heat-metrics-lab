@@ -1,0 +1,17 @@
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Cream background -->
+  <rect width="32" height="32" fill="#F5EFDF"/>
+
+  <!-- Three thermometer marks, thin, in metric colors -->
+  <!-- Air temp: #3F5160 (dark blue) -->
+  <line x1="6" y1="8" x2="6" y2="26" stroke="#3F5160" stroke-width="1.2" stroke-linecap="round"/>
+  <circle cx="6" cy="27" r="1.2" fill="#3F5160"/>
+
+  <!-- Heat Index: #A45A2A (rust/brown) -->
+  <line x1="16" y1="6" x2="16" y2="26" stroke="#A45A2A" stroke-width="1.2" stroke-linecap="round"/>
+  <circle cx="16" cy="27" r="1.2" fill="#A45A2A"/>
+
+  <!-- WBGT: #702424 (dark red) -->
+  <line x1="26" y1="10" x2="26" y2="26" stroke="#702424" stroke-width="1.2" stroke-linecap="round"/>
+  <circle cx="26" cy="27" r="1.2" fill="#702424"/>
+</svg>

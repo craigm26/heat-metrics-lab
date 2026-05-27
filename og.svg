@@ -1,0 +1,18 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Cream background -->
+  <rect width="1200" height="630" fill="#F5EFDF"/>
+
+  <!-- Three big mono numbers in metric ink colors -->
+  <!-- Air temp: 95 °F in #3F5160 -->
+  <text x="150" y="380" font-family="monospace" font-size="140" font-weight="bold" fill="#3F5160">95 °F</text>
+
+  <!-- Heat Index: 105 °F in #A45A2A -->
+  <text x="550" y="380" font-family="monospace" font-size="140" font-weight="bold" fill="#A45A2A">105 °F</text>
+
+  <!-- WBGT: 82 °F in #702424 -->
+  <text x="950" y="380" font-family="monospace" font-size="140" font-weight="bold" fill="#702424">82 °F</text>
+
+  <!-- Tagline in display serif beneath -->
+  <text x="600" y="520" font-family="serif" font-size="48" font-weight="normal" fill="#3F5160" text-anchor="middle">three metrics. one heat day.</text>
+  <text x="600" y="575" font-family="serif" font-size="48" font-weight="normal" fill="#3F5160" text-anchor="middle">three different decisions.</text>
+</svg>
