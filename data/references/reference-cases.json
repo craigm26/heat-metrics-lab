@@ -1,0 +1,188 @@
+{
+  "version": "1.0",
+  "tolerance_f": 0.5,
+  "note": "Reference values are computed from scripts/_metrics.py (Python implementation). The drift gate tests JS-vs-Python port correctness within 0.5 \u00b0F. Absolute-accuracy validation against external references (NWS chart, NIOSH \u00a76, Liljegren 2008) is documented in notes/wbgt-tuning.md and references.md with a separate, looser tolerance.",
+  "generated_by": "scripts/_gen_reference_cases.py",
+  "cases": [
+    {
+      "id": "rothfusz-80-40",
+      "label": "T=80\u00b0F RH=40% \u2014 NWS chart anchor",
+      "source_note": "NWS Tech Memo SR-90",
+      "inputs": {
+        "air_temp_c": 26.67,
+        "rh_pct": 40.0,
+        "wind_mph": 4.0,
+        "solar_w_m2": 0.0
+      },
+      "expected": {
+        "hi_c": 26.44,
+        "wbgt_indoor_c": 20.42
+      }
+    },
+    {
+      "id": "rothfusz-90-70",
+      "label": "T=90\u00b0F RH=70% \u2014 high-humidity HI",
+      "source_note": "NWS Tech Memo SR-90",
+      "inputs": {
+        "air_temp_c": 32.22,
+        "rh_pct": 70.0,
+        "wind_mph": 4.0,
+        "solar_w_m2": 0.0
+      },
+      "expected": {
+        "hi_c": 41.06,
+        "wbgt_indoor_c": 29.03
+      }
+    },
+    {
+      "id": "rothfusz-100-50",
+      "label": "T=100\u00b0F RH=50% \u2014 extreme-heat HI",
+      "source_note": "NWS Tech Memo SR-90",
+      "inputs": {
+        "air_temp_c": 37.78,
+        "rh_pct": 50.0,
+        "wind_mph": 4.0,
+        "solar_w_m2": 0.0
+      },
+      "expected": {
+        "hi_c": 47.96,
+        "wbgt_indoor_c": 31.62
+      }
+    },
+    {
+      "id": "rothfusz-95-30-low-rh",
+      "label": "T=95\u00b0F RH=30% \u2014 low-RH adjustment region",
+      "source_note": "NWS SR-90 low-RH branch",
+      "inputs": {
+        "air_temp_c": 35.0,
+        "rh_pct": 30.0,
+        "wind_mph": 4.0,
+        "solar_w_m2": 0.0
+      },
+      "expected": {
+        "hi_c": 34.67,
+        "wbgt_indoor_c": 26.0
+      }
+    },
+    {
+      "id": "rothfusz-87-90-high-rh",
+      "label": "T=87\u00b0F RH=90% \u2014 high-RH adjustment region",
+      "source_note": "NWS SR-90 high-RH branch",
+      "inputs": {
+        "air_temp_c": 30.56,
+        "rh_pct": 90.0,
+        "wind_mph": 4.0,
+        "solar_w_m2": 0.0
+      },
+      "expected": {
+        "hi_c": 42.9,
+        "wbgt_indoor_c": 29.59
+      }
+    },
+    {
+      "id": "rothfusz-79-50-below-threshold",
+      "label": "T=79\u00b0F RH=50% \u2014 below Rothfusz threshold (simple formula)",
+      "source_note": "NWS SR-90 simple branch",
+      "inputs": {
+        "air_temp_c": 26.11,
+        "rh_pct": 50.0,
+        "wind_mph": 4.0,
+        "solar_w_m2": 0.0
+      },
+      "expected": {
+        "hi_c": 26.08,
+        "wbgt_indoor_c": 21.1
+      }
+    },
+    {
+      "id": "liljegren-30-50-moderate-sun",
+      "label": "T=30\u00b0C RH=50% u=2mph S=600 \u2014 moderate sun",
+      "source_note": "tuned against Liljegren 2008",
+      "inputs": {
+        "air_temp_c": 30.0,
+        "rh_pct": 50.0,
+        "wind_mph": 2.0,
+        "solar_w_m2": 600.0
+      },
+      "expected": {
+        "hi_c": 31.05,
+        "wbgt_outdoor_c": 26.16
+      }
+    },
+    {
+      "id": "liljegren-35-40-full-sun",
+      "label": "T=35\u00b0C RH=40% u=2mph S=800 \u2014 desert moderate sun",
+      "source_note": "tuned against Liljegren 2008",
+      "inputs": {
+        "air_temp_c": 35.0,
+        "rh_pct": 40.0,
+        "wind_mph": 2.0,
+        "solar_w_m2": 800.0
+      },
+      "expected": {
+        "hi_c": 37.22,
+        "wbgt_outdoor_c": 29.73
+      }
+    },
+    {
+      "id": "liljegren-40-30-extreme",
+      "label": "T=40\u00b0C RH=30% u=3mph S=900 \u2014 extreme heat full sun",
+      "source_note": "tuned against Liljegren 2008",
+      "inputs": {
+        "air_temp_c": 40.0,
+        "rh_pct": 30.0,
+        "wind_mph": 3.0,
+        "solar_w_m2": 900.0
+      },
+      "expected": {
+        "hi_c": 43.13,
+        "wbgt_outdoor_c": 32.2
+      }
+    },
+    {
+      "id": "phoenix-aug-12pm",
+      "label": "Phoenix Aug noon full sun (Ch 4 scenario)",
+      "source_note": "site scenario",
+      "inputs": {
+        "air_temp_c": 42.2,
+        "rh_pct": 18.0,
+        "wind_mph": 4.0,
+        "solar_w_m2": 870.0
+      },
+      "expected": {
+        "hi_c": 41.83,
+        "wbgt_outdoor_c": 30.88
+      }
+    },
+    {
+      "id": "warehouse-indoor",
+      "label": "Indoor warehouse no ventilation no sun",
+      "source_note": "site scenario",
+      "inputs": {
+        "air_temp_c": 29.4,
+        "rh_pct": 65.0,
+        "wind_mph": 0.0,
+        "solar_w_m2": 0.0
+      },
+      "expected": {
+        "hi_c": 32.63,
+        "wbgt_indoor_c": 25.8
+      }
+    },
+    {
+      "id": "lytton-bc-2021",
+      "label": "Lytton BC 2021 heat dome peak",
+      "source_note": "ECCC obs + Liljegren-simplified",
+      "inputs": {
+        "air_temp_c": 49.6,
+        "rh_pct": 12.0,
+        "wind_mph": 6.0,
+        "solar_w_m2": 950.0
+      },
+      "expected": {
+        "hi_c": 48.8,
+        "wbgt_outdoor_c": 34.31
+      }
+    }
+  ]
+}
