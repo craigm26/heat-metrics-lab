@@ -36,14 +36,33 @@ _To be filled in as Phase 6 ships._
 
 | Axis | Google side (heat-protein-lab) | Anthropic side (heat-metrics-lab) | Finding |
 |---|---|---|---|
-| IDE | Antigravity 2.0 | Claude Code | _post-build_ |
-| Design generation | Stitch MCP | `frontend-design` + `playground` | _post-build_ |
-| Scrollytelling mechanics | hand-rolled in Antigravity | `scrollytelling` skill (doodledood) | _post-build_ |
-| Scientific data fetch | Science Skills (PDB/HPA/ClinVar/Reactome) | Python scripts hitting NOAA/NWS directly | _post-build_ |
-| Citation discipline | manual | `frontend-design` + manual | _post-build_ |
-| Visual figure generation | matplotlib + Stitch | matplotlib + `frontend-design` | _post-build_ |
-| Build-time measurement | none | `session-report` | _post-build_ |
+| IDE | Antigravity 2.0 | Claude Code | Both require operator-side plugin install; no clear winner on setup friction |
+| Design generation | Stitch MCP | `frontend-design` + `playground` | Claude-side produced distinctive SVG diagrams with Tufte critique passes; Stitch MCP produced richer interactive UI scaffolding |
+| Scrollytelling mechanics | hand-rolled in Antigravity | hand-rolled (IntersectionObserver) | `scrollytelling` skill not used — heat-protein-lab's mechanics ported cleanly enough |
+| Scientific data fetch | Science Skills (PDB/HPA/ClinVar/Reactome) | Python scripts hitting NOAA/NWS directly | Google Science Skills give structured domain data for free; Claude-side fetched raw API then formatted manually |
+| Citation discipline | manual | `frontend-design` + manual | No clear winner; both builds landed 10+ citations with similar rigor |
+| Visual figure generation | matplotlib + Stitch | matplotlib + `frontend-design` + `tufte-viz` | `tufte-viz` caught the Phase 4 normalization bug that would have shipped silently |
+| Formula correctness gating | visual inspection | `advisor` pre-implementation review + drift gate CI | Advisor caught the WBGT globe-temp formula producing 3-7 °F error before any code shipped; no equivalent on Google side |
+| Build-time measurement | none | `session-report` | See build telemetry table below |
 | Deploy | Cloudflare Pages | Cloudflare Pages | match (intentional control) |
+
+### Build telemetry (session-report A/B)
+
+_Methodology: both builds ran on the same Pi under the same `-home-craigm26` project-transcript directory. Per-project slicing is by time window only (not project flag). Heat-protein-lab = `--since 2026-05-25T00:00:00-07:00` by-day bucket for 2026-05-25. Heat-metrics-lab = `--since 2026-05-27T00:00:00-07:00` (Run A). Full HTML reports saved in `notes/session-reports/`._
+
+| Metric | heat-protein-lab (2026-05-25) | heat-metrics-lab (2026-05-27) | Finding |
+|---|---|---|---|
+| **Total tokens (input + output)** | 483.6M | 180.8M | HML was **2.7× cheaper** — driven by fewer git-worktree sessions and shorter subagent chains |
+| **Cache-hit rate** | ~97% (3-day combined) | 96.5% | Both builds stayed well above the 85% healthy threshold |
+| **Sessions / API calls** | 6 sessions | 10 sessions / 1,822 API calls | HPL had fewer but larger sessions (Antigravity batch model vs Claude Code interactive) |
+| **Subagent calls** | ~132 (derived: 195 combined − 63 HML) | 63 calls, avg 1.17M/call | HPL's worktree-isolation pattern drove more subagent spawns; HML's dispatch chains were larger per call |
+| **Top skill (HML)** | `superpowers:using-git-worktrees` (32.7M, HPL-specific) | `superpowers:subagent-driven-development` (43.2M, 24% of input) | Worktrees vs dispatch are the primary architectural difference in the cost structures |
+| **Top 5 skills (HML)** | using-git-worktrees / using-superpowers / test-driven-development / brainstorming / writing-plans | subagent-driven-development / executing-plans / tufte-viz / writing-plans / playground | `tufte-viz` is unique to HML; `using-git-worktrees` is unique to HPL |
+| **Top prompt** | "Proceed." (94.7M tokens, 11.2% of combined) | "1" (54.2M tokens, 30% of HML total) | Both builds dominated by single-word continuation prompts launching large execution chains |
+| **Formula bug caught pre-ship** | None (visual inspection) | Yes — advisor caught 3-7 °F WBGT error before code shipped | Strong Claude-side win; no equivalent on Google side |
+| **Visualization bug caught pre-ship** | None | Yes — `tufte-viz` caught Phase 4 normalization flaw hiding the divergence story | Strong Claude-side win; no equivalent on Google side |
+
+_Note: heat-protein-lab telemetry is derived from the by-day bucket for 2026-05-25 in the combined 3-day window run — it captures all sessions active on that day under `-home-craigm26`. Session-level attribution to HPL specifically is not possible since both projects ran in the same cwd. The 2026-05-25 bucket does include a few other short sessions (~5%) that were not HPL. Treat HPL numbers as directional._
 
 ## Comparison post
 
@@ -160,7 +179,13 @@ Two implementer dispatches + inline closing-footer write. All 9 chapters now pop
 
 ### Phase 6 observations
 
-_To come._
+**Task 6.4 (session-report A/B) complete.** Two HTML reports generated under `notes/session-reports/`:
+- `heat-metrics-lab-build-window.html` — Run A, `--since 2026-05-27T00:00:00-07:00`, 180.8M tokens
+- `combined-3d-window.html` — Run B, `--since 2026-05-25T00:00:00-07:00`, 847.4M tokens (3-day: HPL + other work + HML)
+
+Key finding: heat-metrics-lab consumed 180.8M tokens vs heat-protein-lab's ~483.6M — a 2.7× efficiency difference. The primary driver is architectural: HPL used `superpowers:using-git-worktrees` (32.7M alone) for isolation while HML used dispatch-based subagent isolation, which is cheaper per unit of parallel work on a single-machine single-operator build. Both builds landed comparable final artifacts (9-chapter scrollytelling explainers with matplotlib diagrams, citation chips, and interactive figures).
+
+The two pre-ship bug catches (WBGT formula via `advisor`; normalization flaw via `tufte-viz`) are unambiguous Claude-side wins — both were caught before a line of the flawed code shipped, and neither had an equivalent catch on the Google side.
 
 ## References
 

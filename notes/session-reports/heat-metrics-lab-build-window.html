@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>heat-metrics-lab build window · session-report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* anthropic / claude-code palette */
+    --ivory: #FAF9F5;
+    --term-bg: #1a1918;
+    --term-fg: #d1cfc5;
+    --titlebar: #252321;
+    --outline: rgba(255,255,255,0.08);
+    --hover: rgba(255,255,255,0.035);
+    --clay: #D97757;
+    --dim: rgb(136,136,136);
+    --subtle: rgb(80,80,80);
+    --green: rgb(78,186,101);
+    --red: rgb(255,107,128);
+    --blue: rgb(177,185,249);
+    --yellow: rgb(255,193,7);
+    --mono: 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, Monaco, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--ivory); }
+  body {
+    margin: 0; padding: 48px 24px 80px;
+    font: 13px/1.55 var(--mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--term-fg);
+  }
+
+  /* ——— terminal window chrome ——— */
+  .term {
+    max-width: 1180px; margin: 0 auto;
+    background: var(--term-bg);
+    border-radius: 8px;
+    outline: 1px solid var(--outline);
+    box-shadow: 0 20px 60px rgba(20,20,19,0.22);
+  }
+  .titlebar {
+    background: var(--titlebar);
+    border-radius: 8px 8px 0 0;
+    border-bottom: 1px solid var(--outline);
+    padding: 11px 14px;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .titlebar .dot { width: 11px; height: 11px; border-radius: 50%; background: #3a3836; }
+  .titlebar .path { margin-left: 14px; color: var(--dim); font-size: 11px; }
+  .term-body { padding: 22px 30px 30px; }
+
+  /* ——— command + hero ——— */
+  .cmd { color: var(--dim); margin-bottom: 6px; }
+  .cmd .prompt { color: var(--clay); }
+  .cmd .flag { color: var(--blue); }
+  #meta-line { color: var(--subtle); font-size: 11px; }
+
+  #hero { margin: 14px 0 6px; }
+  #hero-total { font-size: 56px; font-weight: 700; line-height: 1; }
+  #hero-total .unit { color: var(--clay); }
+  #hero-total .label { font-size: 18px; font-weight: 400; color: var(--dim); margin-left: 8px; }
+  #hero-split { color: var(--dim); margin-top: 8px; }
+  #hero-split b { color: var(--term-fg); font-weight: 500; }
+  #hero-split .ok { color: var(--green); }
+  #hero-split .warn { color: var(--yellow); }
+
+  /* ——— sections ——— */
+  section { margin-top: 26px; }
+  .hr { color: var(--subtle); overflow: hidden; white-space: nowrap;
+        user-select: none; margin-bottom: 8px; }
+  .hr::after { content: '────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────'; }
+  h2 { all: unset; display: block; color: var(--clay); font-weight: 500; }
+  h2::before { content: '▸ '; }
+  h2 .hint { color: var(--subtle); font-size: 11px; font-weight: 400; margin-left: 10px; }
+  .section-body { margin-top: 10px; }
+
+  /* ——— overall stat grid ——— */
+  #overall-grid { display: grid; gap: 4px 28px;
+                  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .stat { padding: 4px 0; }
+  .stat .label { font-size: 11px; color: var(--dim); }
+  .stat .val { font-size: 20px; font-weight: 500; }
+  .stat .detail { font-size: 11px; color: var(--subtle); }
+
+  /* ——— takeaways ——— */
+  .take { display: grid; grid-template-columns: 9ch 1fr; gap: 18px;
+          padding: 6px 0; align-items: baseline; }
+  .take .fig { text-align: right; font-weight: 700; font-size: 15px; }
+  .take .txt { color: var(--dim); }
+  .take .txt b { color: var(--term-fg); font-weight: 500; }
+  .take.bad  .fig { color: var(--red); }
+  .take.good .fig { color: var(--green); }
+  .take.info .fig { color: var(--blue); }
+
+  /* ——— callouts (recommendations) ——— */
+  .callout { padding: 6px 0 6px 14px; border-left: 2px solid var(--subtle);
+             color: var(--dim); margin: 6px 0; }
+  .callout b, .callout code { color: var(--term-fg); }
+
+  /* ——— day pills + session gantt ——— */
+  .days { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .dpill { flex: 1; min-width: 84px; max-width: 140px; background: none;
+           border: 1px solid var(--subtle); border-radius: 4px;
+           padding: 9px 6px; font: inherit; color: var(--dim);
+           cursor: pointer; text-align: center; }
+  .dpill:hover { border-color: var(--dim); background: var(--hover); }
+  .dpill .dow { font-size: 10px; color: var(--subtle); display: block; }
+  .dpill .date { font-size: 11px; color: var(--term-fg); font-weight: 500;
+                 display: block; margin: 2px 0 4px; }
+  .dpill .pct { font-size: 16px; font-weight: 700; color: var(--term-fg); display: block; }
+  .dpill .ns { font-size: 10px; color: var(--subtle); display: block; margin-top: 2px; }
+  .dpill.heaviest .pct { color: var(--clay); }
+  .dpill.sel { border-color: var(--clay); background: rgba(217,119,87,0.10); }
+  .gantt-hd { display: flex; justify-content: space-between; align-items: baseline;
+              margin-bottom: 6px; }
+  .gantt-hd .day { color: var(--term-fg); font-weight: 500; }
+  .gantt-hd .stats { font-size: 11px; color: var(--dim); }
+  .gantt-hd .stats b { color: var(--clay); }
+  .gantt { position: relative; border-top: 1px solid var(--outline);
+           border-bottom: 1px solid var(--outline); min-height: 32px; }
+  .lane { position: relative; height: 16px;
+          border-bottom: 1px dashed rgba(255,255,255,0.04); }
+  .seg { position: absolute; top: 2px; height: 12px; border-radius: 2px;
+         opacity: .85; cursor: crosshair; }
+  .seg:hover { opacity: 1; outline: 1px solid var(--term-fg); z-index: 2; }
+  .gantt-rule { position: absolute; top: 0; bottom: 0; width: 0;
+                border-left: 1px dashed var(--subtle); opacity: .4;
+                pointer-events: none; }
+  .gantt-axis { display: flex; justify-content: space-between;
+                font-size: 10px; color: var(--subtle); padding: 4px 0; }
+  .gantt-leg { font-size: 10px; color: var(--subtle); margin-top: 8px;
+               display: flex; gap: 14px; flex-wrap: wrap; }
+  .gantt-leg .sw { display: inline-block; width: 14px; height: 10px;
+                   border-radius: 2px; vertical-align: middle; margin-right: 4px; }
+
+  /* ——— block-char bars ——— */
+  .bar { display: grid; grid-template-columns: 26ch 1fr 8ch; gap: 14px;
+         padding: 2px 0; align-items: center; }
+  .bar .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar .blocks { color: var(--clay); white-space: pre; overflow: hidden; }
+  .bar .blocks .empty { color: var(--subtle); }
+  .bar .pct { text-align: right; color: var(--dim); }
+  .bar:hover .name { color: var(--clay); }
+
+  /* ——— drill-down lists (top prompts, cache breaks) ——— */
+  .drill details { border-top: 1px solid var(--outline); }
+  .drill details:last-of-type { border-bottom: 1px solid var(--outline); }
+  .drill summary { list-style: none; cursor: pointer;
+    display: grid; grid-template-columns: 8ch 1fr; gap: 16px;
+    padding: 9px 4px; align-items: baseline; }
+  .drill summary::-webkit-details-marker { display: none; }
+  .drill summary:hover { background: var(--hover); }
+  .drill .amt { font-weight: 700; text-align: right; color: var(--clay); }
+  .drill .desc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .drill .meta { grid-column: 2; font-size: 11px; color: var(--subtle); }
+  .drill details[open] summary .desc { white-space: normal; }
+  .drill .body { padding: 4px 4px 14px calc(8ch + 20px); font-size: 12px; color: var(--dim); }
+
+  /* ——— transcript context (±2 user msgs) — light inset for legibility ——— */
+  .ctx { margin: 8px 0 12px; padding: 10px 14px;
+         background: #F0EEE6; color: #1a1918;
+         border-radius: 6px; font-size: 12px; }
+  .ctx-msg { padding: 4px 0; white-space: pre-wrap; }
+  .ctx-msg .who { color: #87867F; font-size: 11px; }
+  .ctx-msg .ts { color: #87867F; font-size: 10px; margin-left: 8px; }
+  .ctx-msg.here { margin: 2px -14px; padding: 6px 11px 6px 14px;
+                  border-left: 3px solid var(--clay);
+                  background: rgba(217,119,87,0.10); }
+  .ctx-msg.here .who { color: var(--clay); font-weight: 500; }
+  .ctx-gap { color: #87867F; font-size: 11px; padding: 3px 0 3px 7ch; }
+  .ctx-gap::before { content: '⟨ '; }
+  .ctx-gap::after  { content: ' ⟩'; }
+  .ctx-break { margin: 2px -14px; padding: 8px 11px 8px 14px;
+               border-left: 3px solid #BD5E6D;
+               background: rgba(189,94,109,0.12); color: #A63244; }
+  .ctx-break b { color: #1a1918; margin-right: 6px; }
+
+  .more-btn { display: block; width: 100%; margin-top: 10px; padding: 9px;
+              background: none; border: 1px dashed var(--subtle); cursor: pointer;
+              font: 500 11px/1 var(--mono); letter-spacing: 0.06em;
+              color: var(--dim); }
+  .more-btn:hover { border-color: var(--dim); color: var(--term-fg); }
+
+  /* ——— tables ——— */
+  .scroll { max-height: 440px; overflow: auto;
+            border-top: 1px solid var(--outline); border-bottom: 1px solid var(--outline); }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th, td { text-align: left; padding: 6px 10px; }
+  td { border-top: 1px solid rgba(255,255,255,0.04); }
+  th { position: sticky; top: 0; background: var(--term-bg); z-index: 1;
+       font-weight: 500; font-size: 11px; color: var(--subtle);
+       cursor: pointer; user-select: none;
+       border-bottom: 1px solid var(--outline); }
+  th:hover { color: var(--dim); }
+  th.sorted { color: var(--clay); }
+  th.sorted::after { content: ' ↓'; }
+  th.sorted.asc::after { content: ' ↑'; }
+  td.num, th.num { text-align: right; }
+  tbody tr:hover td { background: var(--hover); }
+
+  footer { margin-top: 28px; color: var(--subtle); font-size: 11px;
+           display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  code { color: var(--blue); }
+  a { color: var(--clay); }
+  ::selection { background: var(--clay); color: var(--term-bg); }
+
+  @media (max-width: 760px) {
+    body { padding: 20px 12px 48px; }
+    .term-body { padding: 16px 16px 24px; }
+    #hero-total { font-size: 40px; }
+    .bar { grid-template-columns: 14ch 1fr 7ch; gap: 8px; }
+    .drill summary { grid-template-columns: 6ch 1fr; }
+    .drill .body { padding-left: 12px; }
+    .take { grid-template-columns: 7ch 1fr; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="term">
+  <div class="titlebar">
+    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <span class="path" id="title-path">heat-metrics-lab · 2026-05-27 build window</span>
+  </div>
+  <div class="term-body">
+
+    <div class="cmd"><span class="prompt">&gt;</span> claude usage <span id="cmd-flags"></span></div>
+    <div id="meta-line">loading…</div>
+
+    <div id="hero">
+      <div id="hero-total">—</div>
+      <div id="hero-split"></div>
+    </div>
+
+    <!-- ====================================================================
+         FINDINGS — agent fills this. 3–5 one-line takeaways. Use .bad for
+         waste/anomalies, .good for healthy signals, .info for neutral.
+         ==================================================================== -->
+    <section>
+      <div class="hr"></div>
+      <h2>findings</h2>
+      <div class="section-body" id="takeaways">
+        <!-- AGENT: anomalies -->
+        <div class="take good"><div class="fig">96.5%</div><div class="txt"><b>cache-hit rate</b> held at 96.5% across the full build — well above the 85% healthy threshold, no runaway uncached re-reads</div></div>
+        <div class="take info"><div class="fig">40.8%</div><div class="txt"><b>subagent tokens</b> = 40.8% of total (63 calls, avg 1.17M/call) — expected for a subagent-driven-development build with parallel implementers and reviewers</div></div>
+        <div class="take info"><div class="fig">24.0%</div><div class="txt"><b>superpowers:subagent-driven-development</b> consumed 24% of input, the single largest skill — appropriate as the primary dispatch mechanism</div></div>
+        <div class="take bad"><div class="fig">30.0%</div><div class="txt">top prompt "1" consumed 30% of the session total — a one-character continuation prompt that launched a 54M-token subagent execution chain</div></div>
+        <div class="take good"><div class="fig">180.8M</div><div class="txt"><b>total tokens</b> for the entire heat-metrics-lab build — 2.7× cheaper than heat-protein-lab (483.6M) for a comparable 9-chapter scrollytelling site</div></div>
+        <!-- /AGENT -->
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         Everything below renders automatically from #report-data.
+         ==================================================================== -->
+    <section>
+      <div class="hr"></div>
+      <h2>summary</h2>
+      <div class="section-body" id="overall-grid"></div>
+    </section>
+
+    <section>
+      <div class="hr"></div>
+      <h2>tokens by project<span class="hint">share of total</span></h2>
+      <div class="section-body" id="project-bars"></div>
+    </section>
+
+    <section id="timeline-section">
+      <div class="hr"></div>
+      <h2>session timeline by day<span class="hint">click a day · ←/→ to navigate</span></h2>
+      <div class="section-body">
+        <div class="days" id="day-pills"></div>
+        <div class="gantt-hd">
+          <span class="day" id="g-day">—</span>
+          <span class="stats" id="g-stats"></span>
+        </div>
+        <div class="gantt-axis"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>
+        <div class="gantt" id="gantt"></div>
+        <div class="gantt-leg" id="gantt-leg"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="hr"></div>
+      <h2>most expensive prompts<span class="hint">click to expand context</span></h2>
+      <div class="section-body drill" id="top-prompts"></div>
+    </section>
+
+    <section>
+      <div class="hr"></div>
+      <h2>cache breaks<span class="hint">&gt;100k uncached · click for context</span></h2>
+      <div class="section-body drill" id="cache-breaks"></div>
+    </section>
+
+    <section>
+      <div class="hr"></div>
+      <h2>projects</h2>
+      <div class="section-body scroll"><table id="tbl-projects"></table></div>
+    </section>
+
+    <section>
+      <div class="hr"></div>
+      <h2>subagent types</h2>
+      <div class="section-body scroll"><table id="tbl-subagents"></table></div>
+    </section>
+
+    <section>
+      <div class="hr"></div>
+      <h2>skills &amp; slash commands</h2>
+      <div class="section-body scroll"><table id="tbl-skills"></table></div>
+    </section>
+
+    <section>
+      <div class="hr"></div>
+      <h2>recommendations</h2>
+      <div class="section-body">
+        <!-- AGENT: optimizations -->
+        <div class="callout">The top prompt "1" triggered a 54M-token execution chain via <code>superpowers:executing-plans</code>. Consider scoping executing-plans dispatches with explicit <code>--max-subagents</code> or phase-gating to reduce runaway spend on single-turn continuations.</div>
+        <div class="callout"><b>tufte-viz</b> (5.18M, 2.9% of input) caught a real normalization bug in Phase 4 and graded every chart in Phases 3-5. The cost-to-value ratio is strongly positive — keep invoking it for every future chart-class artifact.</div>
+        <div class="callout"><b>superpowers:writing-plans</b> and <b>superpowers:executing-plans</b> together = 9.3% of input. For single-day builds of this scope, consider merging spec+dispatch into one prompt; the overhead ratio is acceptable but visible.</div>
+        <!-- /AGENT -->
+      </div>
+    </section>
+
+    <footer>
+      <span id="foot-gen"></span>
+      <span id="foot-stats"></span>
+    </footer>
+
+  </div>
+</div>
+
+<!-- ========================================================================
+     DATA — agent replaces the {} below with the full --json output.
+     ======================================================================== -->
+<script id="report-data" type="application/json">{"root":"/home/craigm26/.claude/projects","generated_at":"2026-05-27T19:03:23.744Z","overall":{"sessions":10,"api_calls":1822,"input_tokens":{"uncached":16846,"cache_create":6306731,"cache_read":173278080,"total":179601657,"pct_cached":96.5},"output_tokens":1194829,"human_messages":59,"hours":{"wall_clock":23.3,"active":11.3},"cache_breaks_over_100k":6,"subagent":{"calls":63,"total_tokens":73783937,"avg_tokens_per_call":1171174},"skill_invocations":{"prd":1,"tasks":1,"superpowers:subagent-driven-development":4,"superpowers:executing-plans":1,"superpowers:finishing-a-development-branch":1,"compact":3,"plugin":6,"exit":3,"superpowers:writing-plans":2,"superpowers:brainstorming":1,"tufte-viz":5,"playground":2},"span":{"from":"2026-05-27T07:00:07.885Z","to":"2026-05-27T19:03:11.486Z"}},"cache_breaks":[{"ts":"2026-05-27T16:19:19.526Z","session":"a8b8265d-6488-40d1-a9f6-ba1e6b85fcb9","project":"-home-craigm26","uncached":283114,"total":301512,"kind":"main","context":[{"text":"Hmm. Maybe we need to make a private GitHub repository as a backup","ts":"2026-05-27T14:10:54.361Z","calls":8,"here":false},{"text":"prepare for new session","ts":"2026-05-27T16:19:04.898Z","calls":6,"here":true}]},{"ts":"2026-05-27T13:00:43.532Z","session":"b1dc8eba-363b-4564-b387-343b21699dd1","project":"-home-craigm26","uncached":274798,"total":274798,"kind":"main","context":[{"text":"1","ts":"2026-05-27T13:00:26.031Z","calls":726,"here":true},{"text":"before we start this work. let's prepare for compaction","ts":"2026-05-27T15:56:08.772Z","calls":3,"here":false},{"text":"/compact","ts":"2026-05-27T16:02:27.419Z","calls":0,"here":false}]},{"ts":"2026-05-27T13:02:26.190Z","session":"b1dc8eba-363b-4564-b387-343b21699dd1","project":"-home-craigm26","uncached":268041,"total":286491,"kind":"main","context":[{"text":"1","ts":"2026-05-27T13:00:26.031Z","calls":726,"here":true},{"text":"before we start this work. let's prepare for compaction","ts":"2026-05-27T15:56:08.772Z","calls":3,"here":false},{"text":"/compact","ts":"2026-05-27T16:02:27.419Z","calls":0,"here":false}]},{"ts":"2026-05-27T12:59:27.071Z","session":"a8b8265d-6488-40d1-a9f6-ba1e6b85fcb9","project":"-home-craigm26","uncached":226347,"total":226347,"kind":"main","context":null},{"ts":"2026-05-27T18:53:30.432Z","session":"02daec0a-737d-4c53-822a-4c52c9635eec","project":"-home-craigm26","uncached":126657,"total":288292,"kind":"main","context":[{"text":"we have a new epicure-Suite github organization. the plan that we have developed is: Epicure Suite \u2014 Repo Plan A family of open-source culinary AI tools for food access and waste reduction, built to run on a Raspberry Pi 5 (8GB) home ser\u2026","ts":"2026-05-27T18:33:54.346Z","calls":5,"here":false},{"text":"Proceed","ts":"2026-05-27T18:39:41.986Z","calls":47,"here":true}]},{"ts":"2026-05-27T18:48:40.408Z","session":"02daec0a-737d-4c53-822a-4c52c9635eec","project":"-home-craigm26","uncached":117185,"total":135583,"kind":"main","context":[{"text":"we have a new epicure-Suite github organization. the plan that we have developed is: Epicure Suite \u2014 Repo Plan A family of open-source culinary AI tools for food access and waste reduction, built to run on a Raspberry Pi 5 (8GB) home ser\u2026","ts":"2026-05-27T18:33:54.346Z","calls":5,"here":false},{"text":"Proceed","ts":"2026-05-27T18:39:41.986Z","calls":47,"here":true}]}],"by_project":{"-home-craigm26":{"sessions":10,"api_calls":1822,"input_tokens":{"uncached":16846,"cache_create":6306731,"cache_read":173278080,"total":179601657,"pct_cached":96.5},"output_tokens":1194829,"human_messages":59,"hours":{"wall_clock":23.3,"active":11.3},"cache_breaks_over_100k":6,"subagent":{"calls":63,"total_tokens":73783937,"avg_tokens_per_call":1171174},"skill_invocations":{"prd":1,"tasks":1,"superpowers:subagent-driven-development":4,"superpowers:executing-plans":1,"superpowers:finishing-a-development-branch":1,"compact":3,"plugin":6,"exit":3,"superpowers:writing-plans":2,"superpowers:brainstorming":1,"tufte-viz":5,"playground":2},"span":{"from":"2026-05-27T07:00:07.885Z","to":"2026-05-27T19:03:11.486Z"}}},"by_subagent_type":{"general-purpose":{"sessions":4,"api_calls":1185,"input_tokens":{"uncached":7308,"cache_create":2764632,"cache_read":62474847,"total":65246787,"pct_cached":95.8},"output_tokens":317872,"human_messages":0,"hours":{"wall_clock":3.6,"active":3.2},"cache_breaks_over_100k":0,"subagent":{"calls":55,"total_tokens":65564659,"avg_tokens_per_call":1192085},"skill_invocations":{"tufte-viz":5,"playground":2},"span":{"from":"2026-05-27T07:00:07.885Z","to":"2026-05-27T19:03:11.486Z"}},"feature-dev:code-reviewer":{"sessions":2,"api_calls":148,"input_tokens":{"uncached":5785,"cache_create":399106,"cache_read":7778872,"total":8183763,"pct_cached":95.1},"output_tokens":35515,"human_messages":0,"hours":{"wall_clock":0.4,"active":0.4},"cache_breaks_over_100k":0,"subagent":{"calls":8,"total_tokens":8219278,"avg_tokens_per_call":1027410},"skill_invocations":{},"span":{"from":"2026-05-27T13:17:15.884Z","to":"2026-05-27T19:02:56.647Z"}}},"by_skill":{"prd":{"sessions":0,"api_calls":4,"input_tokens":{"uncached":9,"cache_create":22189,"cache_read":277006,"total":299204,"pct_cached":92.6},"output_tokens":16133,"human_messages":0,"hours":{"wall_clock":0,"active":0},"cache_breaks_over_100k":0,"subagent":{"calls":0,"total_tokens":0,"avg_tokens_per_call":0},"skill_invocations":{},"span":null},"tasks":{"sessions":0,"api_calls":4,"input_tokens":{"uncached":14,"cache_create":27035,"cache_read":373989,"total":401038,"pct_cached":93.3},"output_tokens":21314,"human_messages":0,"hours":{"wall_clock":0,"active":0},"cache_breaks_over_100k":0,"subagent":{"calls":0,"total_tokens":0,"avg_tokens_per_call":0},"skill_invocations":{},"span":null},"superpowers:subagent-driven-development":{"sessions":0,"api_calls":124,"input_tokens":{"uncached":273,"cache_create":1289506,"cache_read":41879738,"total":43169517,"pct_cached":97},"output_tokens":375312,"human_messages":0,"hours":{"wall_clock":0,"active":0},"cache_breaks_over_100k":0,"subagent":{"calls":0,"total_tokens":0,"avg_tokens_per_call":0},"skill_invocations":{},"span":null},"superpowers:executing-plans":{"sessions":0,"api_calls":106,"input_tokens":{"uncached":161,"cache_create":236296,"cache_read":14037174,"total":14273631,"pct_cached":98.3},"output_tokens":62007,"human_messages":0,"hours":{"wall_clock":0,"active":0},"cache_breaks_over_100k":0,"subagent":{"calls":0,"total_tokens":0,"avg_tokens_per_call":0},"skill_invocations":{},"span":null},"superpowers:finishing-a-development-branch":{"sessions":0,"api_calls":6,"input_tokens":{"uncached":10,"cache_create":10459,"cache_read":1163628,"total":1174097,"pct_cached":99.1},"output_tokens":5995,"human_messages":0,"hours":{"wall_clock":0,"active":0},"cache_breaks_over_100k":0,"subagent":{"calls":0,"total_tokens":0,"avg_tokens_per_call":0},"skill_invocations":{},"span":null},"superpowers:writing-plans":{"sessions":0,"api_calls":8,"input_tokens":{"uncached":22,"cache_create":83718,"cache_read":2390484,"total":2474224,"pct_cached":96.6},"output_tokens":77990,"human_messages":0,"hours":{"wall_clock":0,"active":0},"cache_breaks_over_100k":0,"subagent":{"calls":0,"total_tokens":0,"avg_tokens_per_call":0},"skill_invocations":{},"span":null},"superpowers:brainstorming":{"sessions":0,"api_calls":8,"input_tokens":{"uncached":27,"cache_create":81701,"cache_read":375266,"total":456994,"pct_cached":82.1},"output_tokens":4289,"human_messages":0,"hours":{"wall_clock":0,"active":0},"cache_breaks_over_100k":0,"subagent":{"calls":0,"total_tokens":0,"avg_tokens_per_call":0},"skill_invocations":{},"span":null},"tufte-viz":{"sessions":0,"api_calls":78,"input_tokens":{"uncached":92,"cache_create":122817,"cache_read":5061247,"total":5184156,"pct_cached":97.6},"output_tokens":32866,"human_messages":0,"hours":{"wall_clock":0,"active":0},"cache_breaks_over_100k":0,"subagent":{"calls":0,"total_tokens":0,"avg_tokens_per_call":0},"skill_invocations":{},"span":null},"playground":{"sessions":0,"api_calls":42,"input_tokens":{"uncached":48,"cache_create":81783,"cache_read":2380547,"total":2462378,"pct_cached":96.7},"output_tokens":19785,"human_messages":0,"hours":{"wall_clock":0,"active":0},"cache_breaks_over_100k":0,"subagent":{"calls":0,"total_tokens":0,"avg_tokens_per_call":0},"skill_invocations":{},"span":null}},"top_prompts":[{"ts":"2026-05-27T13:00:26.031Z","project":"-home-craigm26","session":"b1dc8eba-363b-4564-b387-343b21699dd1","text":"1","api_calls":726,"subagent_calls":27,"total_tokens":54157604,"input":{"uncached":8012,"cache_create":2190209,"cache_read":51632219},"output":327164,"context":[{"text":"1","ts":"2026-05-27T13:00:26.031Z","calls":726,"here":true},{"text":"before we start this work. let's prepare for compaction","ts":"2026-05-27T15:56:08.772Z","calls":3,"here":false},{"text":"/compact","ts":"2026-05-27T16:02:27.419Z","calls":0,"here":false}]},{"ts":"2026-05-27T17:53:39.420Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"\u258e Resuming heat-metrics-lab build. Phases 0\u20132 shipped to master (https://github.com/craigm26/heat-metrics-lab). Drift gate CI green. Foundation locked: src/metrics.js + 12-case reference table at 0.000\u00b0F JS-vs-Python drift; 9 chapter \u258e s\u2026","api_calls":202,"subagent_calls":7,"total_tokens":27013732,"input":{"uncached":3555,"cache_create":588545,"cache_read":26251786},"output":169846,"context":[{"text":"/exit","ts":"2026-05-27T17:51:02.112Z","calls":0,"here":false},{"text":"Goodbye!","ts":"2026-05-27T17:51:02.112Z","calls":1,"here":false},{"text":"\u258e Resuming heat-metrics-lab build. Phases 0\u20132 shipped to master (https://github.com/craigm26/heat-metrics-lab). Drift gate CI green. Foundation locked: src/metrics.js + 12-case reference table at 0.000\u00b0F JS-vs-Python drift; 9 chapter \u258e s\u2026","ts":"2026-05-27T17:53:39.420Z","calls":202,"here":true},{"text":"prepare for compaction","ts":"2026-05-27T18:51:47.138Z","calls":4,"here":false},{"text":"/compact","ts":"2026-05-27T18:53:32.353Z","calls":0,"here":false}]},{"ts":"2026-05-27T16:12:30.542Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"1.","api_calls":284,"subagent_calls":13,"total_tokens":24722444,"input":{"uncached":474,"cache_create":741420,"cache_read":23788701},"output":191849,"context":[{"text":"proceed","ts":"2026-05-27T15:57:48.239Z","calls":6,"here":false},{"text":"proceed with the implementation plan","ts":"2026-05-27T16:01:47.849Z","calls":4,"here":false},{"text":"1.","ts":"2026-05-27T16:12:30.542Z","calls":284,"here":true},{"text":"let's do all of the operator actions now.","ts":"2026-05-27T17:06:19.052Z","calls":5,"here":false},{"text":"first, let's analzye this gist - I'm very curious how we could use the principles from a book about designing charts to help us. we may end up designing a new claude code skill/plugin. https://gist.github.com/aparente/e48c353755958621b3c\u2026","ts":"2026-05-27T17:14:34.981Z","calls":13,"here":false}]},{"ts":"2026-05-27T13:25:10.404Z","project":"-home-craigm26","session":"41a2b4e0-b0a3-4ee1-a94e-10226f41fd44","text":"Next session entry point: \"resume heat-engine-spec phase E\" (or just \"keep going\").","api_calls":112,"subagent_calls":0,"total_tokens":15515730,"input":{"uncached":171,"cache_create":246755,"cache_read":15200802},"output":68002,"context":[{"text":"Next session entry point: \"resume heat-engine-spec phase E\" (or just \"keep going\").","ts":"2026-05-27T13:25:10.404Z","calls":112,"here":true},{"text":"we need to do all three pending items as filed github issues for tracking","ts":"2026-05-27T14:05:02.796Z","calls":9,"here":false}]},{"ts":"2026-05-27T16:59:23.837Z","project":"-home-craigm26","session":"f92c43d3-77c9-4f31-9baf-916a70deb798","text":"draft the reply email body for Luca and do the b for all of the follow-ups needed. we need devleoper interest in opencastor","api_calls":52,"subagent_calls":0,"total_tokens":7860293,"input":{"uncached":62,"cache_create":98255,"cache_read":7707339},"output":54637,"context":[{"text":"(non-text)","ts":"2026-05-27T16:54:33.344Z","calls":10,"here":false},{"text":"draft the reply email body for Luca and do the b for all of the follow-ups needed. we need devleoper interest in opencastor","ts":"2026-05-27T16:59:23.837Z","calls":52,"here":true},{"text":"commit and open the PRs","ts":"2026-05-27T17:35:30.554Z","calls":9,"here":false},{"text":"the sort of visibility into robot/agents is also why I wanted to build mcp replay and plat atlas","ts":"2026-05-27T17:39:33.997Z","calls":1,"here":false}]},{"ts":"2026-05-27T17:14:34.981Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"first, let's analzye this gist - I'm very curious how we could use the principles from a book about designing charts to help us. we may end up designing a new claude code skill/plugin. https://gist.github.com/aparente/e48c353755958621b3c\u2026","api_calls":13,"subagent_calls":0,"total_tokens":4710105,"input":{"uncached":18,"cache_create":27730,"cache_read":4667613},"output":14744,"context":[{"text":"1.","ts":"2026-05-27T16:12:30.542Z","calls":284,"here":false},{"text":"let's do all of the operator actions now.","ts":"2026-05-27T17:06:19.052Z","calls":5,"here":false},{"text":"first, let's analzye this gist - I'm very curious how we could use the principles from a book about designing charts to help us. we may end up designing a new claude code skill/plugin. https://gist.github.com/aparente/e48c353755958621b3c\u2026","ts":"2026-05-27T17:14:34.981Z","calls":13,"here":true},{"text":"run the install script","ts":"2026-05-27T17:19:39.772Z","calls":2,"here":false},{"text":"/plugin marketplace add doodledood/claude-code-plugins /plugin install scrollytelling@doodledood /plugin install playground@claude-plugins-official /plugin install session-report@claude-plugins-official","ts":"2026-05-27T17:47:45.756Z","calls":1,"here":false}]},{"ts":"2026-05-27T18:39:41.986Z","project":"-home-craigm26","session":"02daec0a-737d-4c53-822a-4c52c9635eec","text":"Proceed","api_calls":47,"subagent_calls":2,"total_tokens":3947823,"input":{"uncached":965,"cache_create":413363,"cache_read":3475449},"output":58046,"context":[{"text":"we have a new epicure-Suite github organization. the plan that we have developed is: Epicure Suite \u2014 Repo Plan A family of open-source culinary AI tools for food access and waste reduction, built to run on a Raspberry Pi 5 (8GB) home ser\u2026","ts":"2026-05-27T18:33:54.346Z","calls":5,"here":false},{"text":"Proceed","ts":"2026-05-27T18:39:41.986Z","calls":47,"here":true}]},{"ts":"2026-05-27T14:10:54.361Z","project":"-home-craigm26","session":"a8b8265d-6488-40d1-a9f6-ba1e6b85fcb9","text":"Hmm. Maybe we need to make a private GitHub repository as a backup","api_calls":8,"subagent_calls":0,"total_tokens":2375558,"input":{"uncached":13,"cache_create":12225,"cache_read":2358484},"output":4836,"context":[{"text":"Hmm. Maybe we need to make a private GitHub repository as a backup","ts":"2026-05-27T14:10:54.361Z","calls":8,"here":true},{"text":"prepare for new session","ts":"2026-05-27T16:19:04.898Z","calls":6,"here":false}]},{"ts":"2026-05-27T18:51:47.138Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"prepare for compaction","api_calls":4,"subagent_calls":0,"total_tokens":2162582,"input":{"uncached":9,"cache_create":11081,"cache_read":2144991},"output":6501,"context":[{"text":"Goodbye!","ts":"2026-05-27T17:51:02.112Z","calls":1,"here":false},{"text":"\u258e Resuming heat-metrics-lab build. Phases 0\u20132 shipped to master (https://github.com/craigm26/heat-metrics-lab). Drift gate CI green. Foundation locked: src/metrics.js + 12-case reference table at 0.000\u00b0F JS-vs-Python drift; 9 chapter \u258e s\u2026","ts":"2026-05-27T17:53:39.420Z","calls":202,"here":false},{"text":"prepare for compaction","ts":"2026-05-27T18:51:47.138Z","calls":4,"here":true},{"text":"/compact","ts":"2026-05-27T18:53:32.353Z","calls":0,"here":false},{"text":"\u001b[2mCompacted \u001b[22m","ts":"2026-05-27T18:55:46.627Z","calls":0,"here":false}]},{"ts":"2026-05-27T18:56:14.902Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"resume","api_calls":27,"subagent_calls":2,"total_tokens":1894321,"input":{"uncached":67,"cache_create":146467,"cache_read":1731940},"output":15847,"context":[{"text":"/compact","ts":"2026-05-27T18:53:32.353Z","calls":0,"here":false},{"text":"\u001b[2mCompacted \u001b[22m","ts":"2026-05-27T18:55:46.627Z","calls":0,"here":false},{"text":"resume","ts":"2026-05-27T18:56:14.902Z","calls":27,"here":true}]},{"ts":"2026-05-27T14:05:02.796Z","project":"-home-craigm26","session":"41a2b4e0-b0a3-4ee1-a94e-10226f41fd44","text":"we need to do all three pending items as filed github issues for tracking","api_calls":9,"subagent_calls":0,"total_tokens":1851147,"input":{"uncached":14,"cache_create":11535,"cache_read":1829997},"output":9601,"context":[{"text":"Next session entry point: \"resume heat-engine-spec phase E\" (or just \"keep going\").","ts":"2026-05-27T13:25:10.404Z","calls":112,"here":false},{"text":"we need to do all three pending items as filed github issues for tracking","ts":"2026-05-27T14:05:02.796Z","calls":9,"here":true}]},{"ts":"2026-05-27T16:19:04.898Z","project":"-home-craigm26","session":"a8b8265d-6488-40d1-a9f6-ba1e6b85fcb9","text":"prepare for new session","api_calls":6,"subagent_calls":0,"total_tokens":1824311,"input":{"uncached":11,"cache_create":287243,"cache_read":1534101},"output":2956,"context":[{"text":"Hmm. Maybe we need to make a private GitHub repository as a backup","ts":"2026-05-27T14:10:54.361Z","calls":8,"here":false},{"text":"prepare for new session","ts":"2026-05-27T16:19:04.898Z","calls":6,"here":true}]},{"ts":"2026-05-27T17:35:30.554Z","project":"-home-craigm26","session":"f92c43d3-77c9-4f31-9baf-916a70deb798","text":"commit and open the PRs","api_calls":9,"subagent_calls":0,"total_tokens":1764462,"input":{"uncached":14,"cache_create":8785,"cache_read":1748980},"output":6683,"context":[{"text":"(non-text)","ts":"2026-05-27T16:54:33.344Z","calls":10,"here":false},{"text":"draft the reply email body for Luca and do the b for all of the follow-ups needed. we need devleoper interest in opencastor","ts":"2026-05-27T16:59:23.837Z","calls":52,"here":false},{"text":"commit and open the PRs","ts":"2026-05-27T17:35:30.554Z","calls":9,"here":true},{"text":"the sort of visibility into robot/agents is also why I wanted to build mcp replay and plat atlas","ts":"2026-05-27T17:39:33.997Z","calls":1,"here":false},{"text":"do both","ts":"2026-05-27T17:40:34.294Z","calls":6,"here":false}]},{"ts":"2026-05-27T17:06:19.052Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"let's do all of the operator actions now.","api_calls":5,"subagent_calls":0,"total_tokens":1738338,"input":{"uncached":10,"cache_create":7319,"cache_read":1726257},"output":4752,"context":[{"text":"proceed with the implementation plan","ts":"2026-05-27T16:01:47.849Z","calls":4,"here":false},{"text":"1.","ts":"2026-05-27T16:12:30.542Z","calls":284,"here":false},{"text":"let's do all of the operator actions now.","ts":"2026-05-27T17:06:19.052Z","calls":5,"here":true},{"text":"first, let's analzye this gist - I'm very curious how we could use the principles from a book about designing charts to help us. we may end up designing a new claude code skill/plugin. https://gist.github.com/aparente/e48c353755958621b3c\u2026","ts":"2026-05-27T17:14:34.981Z","calls":13,"here":false},{"text":"run the install script","ts":"2026-05-27T17:19:39.772Z","calls":2,"here":false}]},{"ts":"2026-05-27T15:56:08.772Z","project":"-home-craigm26","session":"b1dc8eba-363b-4564-b387-343b21699dd1","text":"before we start this work. let's prepare for compaction","api_calls":3,"subagent_calls":0,"total_tokens":1462347,"input":{"uncached":8,"cache_create":8758,"cache_read":1446538},"output":7043,"context":[{"text":"1","ts":"2026-05-27T13:00:26.031Z","calls":726,"here":false},{"text":"before we start this work. let's prepare for compaction","ts":"2026-05-27T15:56:08.772Z","calls":3,"here":true},{"text":"/compact","ts":"2026-05-27T16:02:27.419Z","calls":0,"here":false},{"text":"\u001b[2mCompacted \u001b[22m","ts":"2026-05-27T16:04:58.788Z","calls":0,"here":false}]},{"ts":"2026-05-27T17:40:34.294Z","project":"-home-craigm26","session":"f92c43d3-77c9-4f31-9baf-916a70deb798","text":"do both","api_calls":6,"subagent_calls":0,"total_tokens":1234760,"input":{"uncached":11,"cache_create":8894,"cache_read":1220330},"output":5525,"context":[{"text":"commit and open the PRs","ts":"2026-05-27T17:35:30.554Z","calls":9,"here":false},{"text":"the sort of visibility into robot/agents is also why I wanted to build mcp replay and plat atlas","ts":"2026-05-27T17:39:33.997Z","calls":1,"here":false},{"text":"do both","ts":"2026-05-27T17:40:34.294Z","calls":6,"here":true},{"text":"/exit","ts":"2026-05-27T17:47:18.355Z","calls":0,"here":false},{"text":"Goodbye!","ts":"2026-05-27T17:47:18.355Z","calls":0,"here":false}]},{"ts":"2026-05-27T15:57:48.239Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"proceed","api_calls":6,"subagent_calls":0,"total_tokens":771563,"input":{"uncached":11,"cache_create":23156,"cache_read":731793},"output":16603,"context":[{"text":"Yes","ts":"2026-05-27T15:52:16.154Z","calls":1,"here":false},{"text":"proceed. all are great options.","ts":"2026-05-27T15:55:41.277Z","calls":1,"here":false},{"text":"proceed","ts":"2026-05-27T15:57:48.239Z","calls":6,"here":true},{"text":"proceed with the implementation plan","ts":"2026-05-27T16:01:47.849Z","calls":4,"here":false},{"text":"1.","ts":"2026-05-27T16:12:30.542Z","calls":284,"here":false}]},{"ts":"2026-05-27T17:19:39.772Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"run the install script","api_calls":2,"subagent_calls":0,"total_tokens":758846,"input":{"uncached":7,"cache_create":2907,"cache_read":754898},"output":1034,"context":[{"text":"let's do all of the operator actions now.","ts":"2026-05-27T17:06:19.052Z","calls":5,"here":false},{"text":"first, let's analzye this gist - I'm very curious how we could use the principles from a book about designing charts to help us. we may end up designing a new claude code skill/plugin. https://gist.github.com/aparente/e48c353755958621b3c\u2026","ts":"2026-05-27T17:14:34.981Z","calls":13,"here":false},{"text":"run the install script","ts":"2026-05-27T17:19:39.772Z","calls":2,"here":true},{"text":"/plugin marketplace add doodledood/claude-code-plugins /plugin install scrollytelling@doodledood /plugin install playground@claude-plugins-official /plugin install session-report@claude-plugins-official","ts":"2026-05-27T17:47:45.756Z","calls":1,"here":false},{"text":"/plugin","ts":"2026-05-27T17:50:03.740Z","calls":0,"here":false}]},{"ts":"2026-05-27T16:54:33.344Z","project":"-home-craigm26","session":"f92c43d3-77c9-4f31-9baf-916a70deb798","text":"(non-text)","api_calls":10,"subagent_calls":0,"total_tokens":734104,"input":{"uncached":2855,"cache_create":127909,"cache_read":589838},"output":13502,"context":[{"text":"(non-text)","ts":"2026-05-27T16:54:33.344Z","calls":10,"here":true},{"text":"draft the reply email body for Luca and do the b for all of the follow-ups needed. we need devleoper interest in opencastor","ts":"2026-05-27T16:59:23.837Z","calls":52,"here":false},{"text":"commit and open the PRs","ts":"2026-05-27T17:35:30.554Z","calls":9,"here":false}]},{"ts":"2026-05-27T16:18:40.553Z","project":"-home-craigm26","session":"64695caf-50d1-4095-a17a-d7d9e1430c7a","text":"prepare for compaction","api_calls":6,"subagent_calls":0,"total_tokens":729760,"input":{"uncached":16,"cache_create":104982,"cache_read":620064},"output":4698,"context":[{"text":"prepare for compaction","ts":"2026-05-27T16:18:40.553Z","calls":6,"here":true},{"text":"/compact","ts":"2026-05-27T16:20:44.167Z","calls":0,"here":false},{"text":"\u001b[2mCompacted \u001b[22m","ts":"2026-05-27T16:22:31.806Z","calls":0,"here":false}]},{"ts":"2026-05-27T16:01:47.849Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"proceed with the implementation plan","api_calls":4,"subagent_calls":0,"total_tokens":670047,"input":{"uncached":13,"cache_create":45812,"cache_read":580127},"output":44095,"context":[{"text":"proceed. all are great options.","ts":"2026-05-27T15:55:41.277Z","calls":1,"here":false},{"text":"proceed","ts":"2026-05-27T15:57:48.239Z","calls":6,"here":false},{"text":"proceed with the implementation plan","ts":"2026-05-27T16:01:47.849Z","calls":4,"here":true},{"text":"1.","ts":"2026-05-27T16:12:30.542Z","calls":284,"here":false},{"text":"let's do all of the operator actions now.","ts":"2026-05-27T17:06:19.052Z","calls":5,"here":false}]},{"ts":"2026-05-27T15:46:51.708Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"Looks great. Make sure we include a Celsius and Fahrenheit toggle. Also, look for additional official Anthropic and non Anthropic skills before we get started. See if any would help us build a great experience in a single shot.","api_calls":5,"subagent_calls":0,"total_tokens":463939,"input":{"uncached":15,"cache_create":23002,"cache_read":430453},"output":10469,"context":[{"text":"No, just go ahead and design it.","ts":"2026-05-27T15:27:19.007Z","calls":6,"here":false},{"text":"B","ts":"2026-05-27T15:41:49.462Z","calls":2,"here":false},{"text":"Looks great. Make sure we include a Celsius and Fahrenheit toggle. Also, look for additional official Anthropic and non Anthropic skills before we get started. See if any would help us build a great experience in a single shot.","ts":"2026-05-27T15:46:51.708Z","calls":5,"here":true},{"text":"Yes","ts":"2026-05-27T15:52:16.154Z","calls":1,"here":false},{"text":"proceed. all are great options.","ts":"2026-05-27T15:55:41.277Z","calls":1,"here":false}]},{"ts":"2026-05-27T15:17:52.317Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"I want to make a similar scrollytelling story as heat protein lab. Use Anthropic tooling only. Explain the differences between air temperature, heat index and WBGT. Pros and cons and why it matters etc.","api_calls":8,"subagent_calls":0,"total_tokens":461283,"input":{"uncached":27,"cache_create":81701,"cache_read":375266},"output":4289,"context":[{"text":"I want to make a similar scrollytelling story as heat protein lab. Use Anthropic tooling only. Explain the differences between air temperature, heat index and WBGT. Pros and cons and why it matters etc.","ts":"2026-05-27T15:17:52.317Z","calls":8,"here":true},{"text":"No, just go ahead and design it.","ts":"2026-05-27T15:27:19.007Z","calls":6,"here":false},{"text":"B","ts":"2026-05-27T15:41:49.462Z","calls":2,"here":false}]},{"ts":"2026-05-27T13:59:16.674Z","project":"-home-craigm26","session":"e91e99cc-be98-4d85-873e-d132fc8f2c04","text":"Yes","api_calls":7,"subagent_calls":0,"total_tokens":438559,"input":{"uncached":12,"cache_create":14490,"cache_read":415239},"output":8818,"context":[{"text":"I wish there was a way to use the onboard AI TPU accelerator with 26 tops for general LLM processing- for both Claude or Gemma or OpenCastor. Hailo.","ts":"2026-05-27T13:47:34.565Z","calls":1,"here":false},{"text":"Seems like this capability should be auto detected during OpenCastor/robot.md already","ts":"2026-05-27T13:51:54.248Z","calls":4,"here":false},{"text":"Yes","ts":"2026-05-27T13:59:16.674Z","calls":7,"here":true}]},{"ts":"2026-05-27T15:27:19.007Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"No, just go ahead and design it.","api_calls":6,"subagent_calls":0,"total_tokens":437966,"input":{"uncached":16,"cache_create":9255,"cache_read":420646},"output":8049,"context":[{"text":"I want to make a similar scrollytelling story as heat protein lab. Use Anthropic tooling only. Explain the differences between air temperature, heat index and WBGT. Pros and cons and why it matters etc.","ts":"2026-05-27T15:17:52.317Z","calls":8,"here":false},{"text":"No, just go ahead and design it.","ts":"2026-05-27T15:27:19.007Z","calls":6,"here":true},{"text":"B","ts":"2026-05-27T15:41:49.462Z","calls":2,"here":false},{"text":"Looks great. Make sure we include a Celsius and Fahrenheit toggle. Also, look for additional official Anthropic and non Anthropic skills before we get started. See if any would help us build a great experience in a single shot.","ts":"2026-05-27T15:46:51.708Z","calls":5,"here":false}]},{"ts":"2026-05-27T17:47:45.756Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"/plugin marketplace add doodledood/claude-code-plugins /plugin install scrollytelling@doodledood /plugin install playground@claude-plugins-official /plugin install session-report@claude-plugins-official","api_calls":1,"subagent_calls":0,"total_tokens":387462,"input":{"uncached":5,"cache_create":6142,"cache_read":379531},"output":1784,"context":[{"text":"first, let's analzye this gist - I'm very curious how we could use the principles from a book about designing charts to help us. we may end up designing a new claude code skill/plugin. https://gist.github.com/aparente/e48c353755958621b3c\u2026","ts":"2026-05-27T17:14:34.981Z","calls":13,"here":false},{"text":"run the install script","ts":"2026-05-27T17:19:39.772Z","calls":2,"here":false},{"text":"/plugin marketplace add doodledood/claude-code-plugins /plugin install scrollytelling@doodledood /plugin install playground@claude-plugins-official /plugin install session-report@claude-plugins-official","ts":"2026-05-27T17:47:45.756Z","calls":1,"here":true},{"text":"/plugin","ts":"2026-05-27T17:50:03.740Z","calls":0,"here":false},{"text":"Successfully added marketplace: claude-code-plugins-marketplace","ts":"2026-05-27T17:50:03.740Z","calls":0,"here":false}]},{"ts":"2026-05-27T18:33:54.346Z","project":"-home-craigm26","session":"02daec0a-737d-4c53-822a-4c52c9635eec","text":"we have a new epicure-Suite github organization. the plan that we have developed is: Epicure Suite \u2014 Repo Plan A family of open-source culinary AI tools for food access and waste reduction, built to run on a Raspberry Pi 5 (8GB) home ser\u2026","api_calls":5,"subagent_calls":0,"total_tokens":382354,"input":{"uncached":15,"cache_create":85378,"cache_read":277006},"output":19955,"context":[{"text":"we have a new epicure-Suite github organization. the plan that we have developed is: Epicure Suite \u2014 Repo Plan A family of open-source culinary AI tools for food access and waste reduction, built to run on a Raspberry Pi 5 (8GB) home ser\u2026","ts":"2026-05-27T18:33:54.346Z","calls":5,"here":true},{"text":"Proceed","ts":"2026-05-27T18:39:41.986Z","calls":47,"here":false}]},{"ts":"2026-05-27T13:51:54.248Z","project":"-home-craigm26","session":"e91e99cc-be98-4d85-873e-d132fc8f2c04","text":"Seems like this capability should be auto detected during OpenCastor/robot.md already","api_calls":4,"subagent_calls":0,"total_tokens":204534,"input":{"uncached":9,"cache_create":5377,"cache_read":197099},"output":2049,"context":[{"text":"I wish there was a way to use the onboard AI TPU accelerator with 26 tops for general LLM processing- for both Claude or Gemma or OpenCastor. Hailo.","ts":"2026-05-27T13:47:34.565Z","calls":1,"here":false},{"text":"Seems like this capability should be auto detected during OpenCastor/robot.md already","ts":"2026-05-27T13:51:54.248Z","calls":4,"here":true},{"text":"Yes","ts":"2026-05-27T13:59:16.674Z","calls":7,"here":false}]},{"ts":"2026-05-27T17:39:33.997Z","project":"-home-craigm26","session":"f92c43d3-77c9-4f31-9baf-916a70deb798","text":"the sort of visibility into robot/agents is also why I wanted to build mcp replay and plat atlas","api_calls":1,"subagent_calls":0,"total_tokens":201793,"input":{"uncached":6,"cache_create":560,"cache_read":199261},"output":1966,"context":[{"text":"draft the reply email body for Luca and do the b for all of the follow-ups needed. we need devleoper interest in opencastor","ts":"2026-05-27T16:59:23.837Z","calls":52,"here":false},{"text":"commit and open the PRs","ts":"2026-05-27T17:35:30.554Z","calls":9,"here":false},{"text":"the sort of visibility into robot/agents is also why I wanted to build mcp replay and plat atlas","ts":"2026-05-27T17:39:33.997Z","calls":1,"here":true},{"text":"do both","ts":"2026-05-27T17:40:34.294Z","calls":6,"here":false},{"text":"/exit","ts":"2026-05-27T17:47:18.355Z","calls":0,"here":false}]},{"ts":"2026-05-27T15:41:49.462Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"B","api_calls":2,"subagent_calls":0,"total_tokens":157952,"input":{"uncached":7,"cache_create":1971,"cache_read":153665},"output":2309,"context":[{"text":"I want to make a similar scrollytelling story as heat protein lab. Use Anthropic tooling only. Explain the differences between air temperature, heat index and WBGT. Pros and cons and why it matters etc.","ts":"2026-05-27T15:17:52.317Z","calls":8,"here":false},{"text":"No, just go ahead and design it.","ts":"2026-05-27T15:27:19.007Z","calls":6,"here":false},{"text":"B","ts":"2026-05-27T15:41:49.462Z","calls":2,"here":true},{"text":"Looks great. Make sure we include a Celsius and Fahrenheit toggle. Also, look for additional official Anthropic and non Anthropic skills before we get started. See if any would help us build a great experience in a single shot.","ts":"2026-05-27T15:46:51.708Z","calls":5,"here":false},{"text":"Yes","ts":"2026-05-27T15:52:16.154Z","calls":1,"here":false}]},{"ts":"2026-05-27T15:55:41.277Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"proceed. all are great options.","api_calls":1,"subagent_calls":0,"total_tokens":116164,"input":{"uncached":6,"cache_create":5719,"cache_read":103946},"output":6493,"context":[{"text":"Looks great. Make sure we include a Celsius and Fahrenheit toggle. Also, look for additional official Anthropic and non Anthropic skills before we get started. See if any would help us build a great experience in a single shot.","ts":"2026-05-27T15:46:51.708Z","calls":5,"here":false},{"text":"Yes","ts":"2026-05-27T15:52:16.154Z","calls":1,"here":false},{"text":"proceed. all are great options.","ts":"2026-05-27T15:55:41.277Z","calls":1,"here":true},{"text":"proceed","ts":"2026-05-27T15:57:48.239Z","calls":6,"here":false},{"text":"proceed with the implementation plan","ts":"2026-05-27T16:01:47.849Z","calls":4,"here":false}]},{"ts":"2026-05-27T15:52:16.154Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"Yes","api_calls":1,"subagent_calls":0,"total_tokens":109656,"input":{"uncached":6,"cache_create":2685,"cache_read":101261},"output":5704,"context":[{"text":"B","ts":"2026-05-27T15:41:49.462Z","calls":2,"here":false},{"text":"Looks great. Make sure we include a Celsius and Fahrenheit toggle. Also, look for additional official Anthropic and non Anthropic skills before we get started. See if any would help us build a great experience in a single shot.","ts":"2026-05-27T15:46:51.708Z","calls":5,"here":false},{"text":"Yes","ts":"2026-05-27T15:52:16.154Z","calls":1,"here":true},{"text":"proceed. all are great options.","ts":"2026-05-27T15:55:41.277Z","calls":1,"here":false},{"text":"proceed","ts":"2026-05-27T15:57:48.239Z","calls":6,"here":false}]},{"ts":"2026-05-27T16:19:17.868Z","project":"-home-craigm26","session":"b1dc8eba-363b-4564-b387-343b21699dd1","text":"prepare for new session","api_calls":1,"subagent_calls":0,"total_tokens":74582,"input":{"uncached":6,"cache_create":55577,"cache_read":18450},"output":549,"context":[{"text":"/compact","ts":"2026-05-27T16:02:27.419Z","calls":0,"here":false},{"text":"\u001b[2mCompacted \u001b[22m","ts":"2026-05-27T16:04:58.788Z","calls":0,"here":false},{"text":"prepare for new session","ts":"2026-05-27T16:19:17.868Z","calls":1,"here":true}]},{"ts":"2026-05-27T16:25:14.765Z","project":"-home-craigm26","session":"64695caf-50d1-4095-a17a-d7d9e1430c7a","text":"prepare for new session","api_calls":1,"subagent_calls":0,"total_tokens":73407,"input":{"uncached":6,"cache_create":54588,"cache_read":18450},"output":363,"context":[{"text":"/compact","ts":"2026-05-27T16:20:44.167Z","calls":0,"here":false},{"text":"\u001b[2mCompacted \u001b[22m","ts":"2026-05-27T16:22:31.806Z","calls":0,"here":false},{"text":"prepare for new session","ts":"2026-05-27T16:25:14.765Z","calls":1,"here":true}]},{"ts":"2026-05-27T13:47:34.565Z","project":"-home-craigm26","session":"e91e99cc-be98-4d85-873e-d132fc8f2c04","text":"I wish there was a way to use the onboard AI TPU accelerator with 26 tops for general LLM processing- for both Claude or Gemma or OpenCastor. Hailo.","api_calls":1,"subagent_calls":0,"total_tokens":48654,"input":{"uncached":6,"cache_create":29070,"cache_read":18305},"output":1273,"context":[{"text":"I wish there was a way to use the onboard AI TPU accelerator with 26 tops for general LLM processing- for both Claude or Gemma or OpenCastor. Hailo.","ts":"2026-05-27T13:47:34.565Z","calls":1,"here":true},{"text":"Seems like this capability should be auto detected during OpenCastor/robot.md already","ts":"2026-05-27T13:51:54.248Z","calls":4,"here":false},{"text":"Yes","ts":"2026-05-27T13:59:16.674Z","calls":7,"here":false}]},{"ts":"2026-05-27T17:51:02.112Z","project":"-home-craigm26","session":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","text":"Goodbye!","api_calls":1,"subagent_calls":0,"total_tokens":0,"input":{"uncached":0,"cache_create":0,"cache_read":0},"output":0,"context":[{"text":"Marketplace \"doodledood\" not found","ts":"2026-05-27T17:50:46.169Z","calls":0,"here":false},{"text":"/exit","ts":"2026-05-27T17:51:02.112Z","calls":0,"here":false},{"text":"Goodbye!","ts":"2026-05-27T17:51:02.112Z","calls":1,"here":true},{"text":"\u258e Resuming heat-metrics-lab build. Phases 0\u20132 shipped to master (https://github.com/craigm26/heat-metrics-lab). Drift gate CI green. Foundation locked: src/metrics.js + 12-case reference table at 0.000\u00b0F JS-vs-Python drift; 9 chapter \u258e s\u2026","ts":"2026-05-27T17:53:39.420Z","calls":202,"here":false},{"text":"prepare for compaction","ts":"2026-05-27T18:51:47.138Z","calls":4,"here":false}]}],"by_day":[{"date":"2026-05-27","dow":"Wed","tokens":180796486,"sessions":[{"id":"a8b8265d-6488-40d1-a9f6-ba1e6b85fcb9","project":"-home-craigm26","tokens":23214897,"start_min":0,"end_min":560},{"id":"b1dc8eba-363b-4564-b387-343b21699dd1","project":"-home-craigm26","tokens":55694533,"start_min":360,"end_min":562},{"id":"41a2b4e0-b0a3-4ee1-a94e-10226f41fd44","project":"-home-craigm26","tokens":17366877,"start_min":385,"end_min":428},{"id":"e91e99cc-be98-4d85-873e-d132fc8f2c04","project":"-home-craigm26","tokens":691747,"start_min":403,"end_min":425},{"id":"e632896f-b4b8-43dc-a5d3-6bbf937e0464","project":"-home-craigm26","tokens":66814502,"start_min":492,"end_min":723},{"id":"64695caf-50d1-4095-a17a-d7d9e1430c7a","project":"-home-craigm26","tokens":803167,"start_min":559,"end_min":573},{"id":"f92c43d3-77c9-4f31-9baf-916a70deb798","project":"-home-craigm26","tokens":11795412,"start_min":593,"end_min":647},{"id":"02daec0a-737d-4c53-822a-4c52c9635eec","project":"-home-craigm26","tokens":4415351,"start_min":690,"end_min":723}],"peak":4,"peak_at_min":400}]}</script>
+
+<script>
+(function() {
+  const DATA = JSON.parse(document.getElementById('report-data').textContent || '{}');
+  const $ = id => document.getElementById(id);
+  const fmt = n => n>=1e9 ? (n/1e9).toFixed(2)+'B' : n>=1e6 ? (n/1e6).toFixed(2)+'M'
+              : n>=1e3 ? (n/1e3).toFixed(1)+'k' : String(n);
+  const pct = (a,b) => b>0 ? ((100*a/b).toFixed(1)+'%') : '—';
+  const esc = s => String(s).replace(/[&<>"]/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const short = p => String(p||'').replace(/^-Users-[^-]+-/,'').replace(/^code-/,'');
+  const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const niceDate = iso => { const d = new Date(iso); return isNaN(d) ? '' :
+    `${MON[d.getMonth()]} ${d.getDate()} · ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; };
+
+  if (!DATA.overall) { $('meta-line').textContent = 'no data — embed JSON in #report-data.'; return; }
+
+  // header + hero
+  const o = DATA.overall, it = o.input_tokens;
+  const GRAND = it.total + o.output_tokens;
+  const share = n => GRAND>0 ? (100*n/GRAND).toFixed(1)+'%' : '—';
+  const span = o.span;
+  $('cmd-flags').innerHTML = DATA.since
+    ? `<span class="flag">--since</span> ${esc(DATA.since)}` : '';
+  $('meta-line').textContent =
+    (span ? `${span.from.slice(0,10)} → ${span.to.slice(0,10)}` : '') +
+    ` · ${DATA.root || ''}`;
+  $('foot-gen').textContent = `generated ${DATA.generated_at?.slice(0,16).replace('T',' ') || ''}`;
+  $('foot-stats').textContent =
+    `${o.sessions} sessions · ${o.api_calls} api calls · ${o.human_messages} prompts`;
+
+  const num = fmt(GRAND), m = num.match(/^([\d.]+)([A-Za-z]*)$/);
+  $('hero-total').innerHTML =
+    `${m?m[1]:num}<span class="unit">${m?m[2]:''}</span><span class="label">tokens</span>`;
+  const cacheCls = it.pct_cached>=85 ? 'ok' : 'warn';
+  $('hero-split').innerHTML =
+    `<b>${fmt(it.total)}</b> input <span class="${cacheCls}">(${it.pct_cached}% cache-read)</span> · `+
+    `<b>${fmt(o.output_tokens)}</b> output · all figures below are % of this total`;
+
+  // overall stat grid
+  $('overall-grid').innerHTML = [
+    ['sessions', o.sessions],
+    ['api calls', o.api_calls],
+    ['human msgs', o.human_messages],
+    ['active hours', o.hours.active, `${o.hours.wall_clock} wall-clock`],
+    ['cache breaks', o.cache_breaks_over_100k, '>100k uncached'],
+    ['subagent calls', o.subagent.calls, `avg ${fmt(o.subagent.avg_tokens_per_call)}`],
+  ].map(([l,v,d]) =>
+    `<div class="stat"><div class="label">${l}</div>`+
+    `<div class="val">${typeof v==='number'&&v>=1e4?fmt(v):v}</div>`+
+    (d?`<div class="detail">${d}</div>`:'')+`</div>`).join('');
+
+  // session timeline by day
+  (function() {
+    const days = (DATA.by_day||[]).slice(-14);
+    if (!days.length) { $('timeline-section').style.display='none'; return; }
+    const PCOL = ['rgb(177,185,249)','rgb(78,186,101)','#D97757','rgb(255,193,7)',
+                  'rgb(255,107,128)','#9b8cff','#6ec1d6','#c792ea'];
+    const dayTotal = days.reduce((a,d)=>a+d.tokens,0) || 1;
+    const tokMax = Math.max(...days.map(d=>d.tokens));
+    const projects = [...new Set(days.flatMap(d=>d.sessions.map(s=>s.project)))];
+    const colorOf = p => PCOL[projects.indexOf(p)%PCOL.length];
+    const hhmm = m => (m>=1440?`+${Math.floor(m/1440)}d `:'') +
+      `${String(Math.floor(m/60)%24).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
+    const md = iso => { const [,mo,da]=iso.split('-'); return `${MON[+mo-1]} ${+da}`; };
+    let sel = days.findIndex(d=>d.tokens===tokMax);
+
+    function pills() {
+      $('day-pills').innerHTML = days.map((d,i)=>
+        `<button class="dpill${d.tokens===tokMax?' heaviest':''}${i===sel?' sel':''}" data-i="${i}">`+
+        `<span class="dow">${esc(d.dow)}</span>`+
+        `<span class="date">${esc(md(d.date))}</span>`+
+        `<span class="pct">${(100*d.tokens/dayTotal).toFixed(1)}%</span>`+
+        `<span class="ns">${d.sessions.length} sess</span></button>`
+      ).join('');
+      $('day-pills').querySelectorAll('.dpill').forEach(el=>
+        el.onclick=()=>{sel=+el.dataset.i;pills();gantt();});
+    }
+    function gantt() {
+      const d = days[sel], DAY = 1440;
+      $('g-day').textContent = `${d.dow} ${md(d.date)}`;
+      $('g-stats').innerHTML = `${d.sessions.length} sessions · ${fmt(d.tokens)} tokens`+
+        ` · peak <b>${d.peak}</b> concurrent at <b>${hhmm(d.peak_at_min)}</b>`;
+      const lanes = [];
+      for (const s of d.sessions) {
+        let placed = false;
+        for (const L of lanes) if (L[L.length-1].end_min <= s.start_min) { L.push(s); placed=true; break; }
+        if (!placed) lanes.push([s]);
+      }
+      let h = '';
+      for (let t=0;t<=24;t+=6) h += `<div class="gantt-rule" style="left:${100*t/24}%"></div>`;
+      h += lanes.map(L=>`<div class="lane">${L.map(s=>{
+        const end = Math.min(s.end_min, DAY);
+        const w = Math.max(0.15, 100*(end-s.start_min)/DAY);
+        const tip = `folder: ${short(s.project)}\n`+
+          `${hhmm(s.start_min)}–${hhmm(s.end_min)} · ${fmt(s.tokens)} tokens\n`+
+          `session ${s.id}`;
+        return `<span class="seg" style="left:${100*s.start_min/DAY}%;width:${w}%;`+
+          `background:${colorOf(s.project)}" title="${esc(tip)}"></span>`;
+      }).join('')}</div>`).join('');
+      $('gantt').innerHTML = h || '<div class="callout">no sessions</div>';
+    }
+    document.addEventListener('keydown',e=>{
+      if (e.key==='ArrowRight'&&sel<days.length-1){sel++;pills();gantt();e.preventDefault();}
+      if (e.key==='ArrowLeft'&&sel>0){sel--;pills();gantt();e.preventDefault();}
+    });
+    $('gantt-leg').innerHTML = projects.slice(0,12).map(p=>
+      `<span><span class="sw" style="background:${colorOf(p)}"></span>${esc(short(p))}</span>`).join('');
+    pills(); gantt();
+  })();
+
+  // block-char project bars
+  (function() {
+    const W = 48;
+    const rows = Object.entries(DATA.by_project||{})
+      .map(([k,v]) => [k, v.input_tokens.total + v.output_tokens])
+      .sort((a,b)=>b[1]-a[1]).slice(0,15);
+    const max = rows[0]?.[1] || 1;
+    $('project-bars').innerHTML = rows.map(([k,v]) => {
+      const n = Math.max(1, Math.round(W*v/max));
+      return `<div class="bar"><span class="name" title="${esc(k)} — ${fmt(v)}">${esc(short(k))}</span>`+
+        `<span class="blocks">${'█'.repeat(n)}<span class="empty">${'░'.repeat(W-n)}</span></span>`+
+        `<span class="pct">${share(v)}</span></div>`;
+    }).join('');
+  })();
+
+  // ±2 user-message transcript context
+  function renderContext(ctx, mark) {
+    if (!ctx || !ctx.length) return '<div class="ctx-gap">no transcript context available</div>';
+    let h = '<div class="ctx">';
+    ctx.forEach((m, i) => {
+      const who = m.here ? '&gt; user' : '  user';
+      h += `<div class="ctx-msg${m.here?' here':''}">`+
+           `<span class="who">${who}</span>  ${esc(m.text||'(non-text)')}`+
+           `<span class="ts">${niceDate(m.ts)}</span></div>`;
+      if (m.here && mark) h += mark;
+      if (i < ctx.length-1 || m.here)
+        h += `<div class="ctx-gap">${m.calls} api call${m.calls===1?'':'s'}</div>`;
+    });
+    return h + '</div>';
+  }
+
+  // expandable drill-down list with "show N more" toggle
+  function drillList(hostId, items, rowFn, empty) {
+    const SHOW = 5;
+    const host = $(hostId);
+    if (!items.length) { host.innerHTML = `<div class="callout">${empty}</div>`; return; }
+    const head = items.slice(0,SHOW).map(rowFn).join('');
+    const rest = items.slice(SHOW).map(rowFn).join('');
+    host.innerHTML = head + (rest
+      ? `<div hidden>${rest}</div><button class="more-btn">show ${items.length-SHOW} more</button>`
+      : '');
+    const btn = host.querySelector('.more-btn');
+    if (btn) btn.onclick = () => {
+      const r = btn.previousElementSibling; r.hidden = !r.hidden;
+      btn.textContent = r.hidden ? `show ${items.length-SHOW} more` : 'show less';
+    };
+  }
+
+  drillList('top-prompts', (DATA.top_prompts||[]).slice(0,100), p => {
+    const inTot = p.input.uncached+p.input.cache_create+p.input.cache_read;
+    return `<details><summary>`+
+      `<span class="amt">${share(p.total_tokens)}</span>`+
+      `<span class="desc">${esc(p.text)}</span>`+
+      `<span class="meta">${niceDate(p.ts)} · ${esc(short(p.project))} · ${p.api_calls} calls`+
+        (p.subagent_calls?` · ${p.subagent_calls} subagents`:'')+
+        ` · ${pct(p.input.cache_read,inTot)} cached</span>`+
+      `</summary><div class="body">`+
+      renderContext(p.context)+
+      `<div>session <code>${esc(p.session)}</code></div>`+
+      `<div>in: uncached ${fmt(p.input.uncached)} · cache-create ${fmt(p.input.cache_create)} · `+
+      `cache-read ${fmt(p.input.cache_read)} · out ${fmt(p.output)}</div>`+
+      `</div></details>`;
+  }, 'No prompts in range.');
+
+  drillList('cache-breaks', (DATA.cache_breaks||[]).slice(0,100), b =>
+    `<details><summary>`+
+    `<span class="amt">${fmt(b.uncached)}</span>`+
+    `<span class="desc">${esc(short(b.project))} · `+
+      `${b.kind==='subagent'?esc(b.agentType||'subagent'):'main'}</span>`+
+    `<span class="meta">${niceDate(b.ts)} · ${pct(b.uncached,b.total)} of ${fmt(b.total)} uncached</span>`+
+    `</summary><div class="body">`+
+    renderContext(b.context,
+      `<div class="ctx-break"><b>${fmt(b.uncached)}</b> uncached `+
+      `(${pct(b.uncached,b.total)} of ${fmt(b.total)}) — cache break here</div>`)+
+    `<div>session <code>${esc(b.session)}</code></div>`+
+    `</div></details>`,
+  'No cache breaks over threshold.');
+
+  // sortable table
+  function table(el, cols, rows) {
+    let sortIdx = cols.findIndex(c=>c.sort), asc = false;
+    function render() {
+      const sorted = rows.slice().sort((a,b)=>{
+        const va=a[sortIdx], vb=b[sortIdx];
+        return (asc?1:-1)*(typeof va==='number' ? va-vb : String(va).localeCompare(String(vb)));
+      });
+      el.innerHTML = `<thead><tr>${cols.map((c,i)=>
+        `<th class="${c.num?'num':''} ${i===sortIdx?'sorted'+(asc?' asc':''):''}" data-i="${i}">${c.h}</th>`
+      ).join('')}</tr></thead><tbody>${sorted.map(r=>
+        `<tr>${r.map((v,i)=>`<td class="${cols[i].num?'num':''}">${
+          cols[i].fmt?cols[i].fmt(v):esc(v)}</td>`).join('')}</tr>`
+      ).join('')}</tbody>`;
+      el.querySelectorAll('th').forEach(th=>th.onclick=()=>{
+        const i=+th.dataset.i; if(i===sortIdx)asc=!asc; else{sortIdx=i;asc=false;} render();
+      });
+    }
+    render();
+  }
+
+  function statRows(obj) {
+    return Object.entries(obj||{}).map(([k,v])=>[
+      short(k), GRAND>0 ? 100*(v.input_tokens.total+v.output_tokens)/GRAND : 0,
+      v.sessions, v.api_calls, v.human_messages,
+      v.input_tokens.total, v.input_tokens.pct_cached, v.output_tokens,
+      v.hours.active, v.cache_breaks_over_100k,
+      v.subagent.calls, v.subagent.avg_tokens_per_call,
+    ]);
+  }
+  const statCols = [
+    {h:'name'},{h:'% total',num:1,sort:1,fmt:v=>v.toFixed(1)+'%'},
+    {h:'sess',num:1},{h:'calls',num:1},{h:'msgs',num:1},
+    {h:'input',num:1,fmt:fmt},{h:'%cached',num:1,fmt:v=>v+'%'},
+    {h:'output',num:1,fmt:fmt},{h:'active h',num:1},{h:'breaks',num:1},
+    {h:'subagents',num:1},{h:'avg sub tok',num:1,fmt:fmt},
+  ];
+  table($('tbl-projects'), statCols, statRows(DATA.by_project));
+  table($('tbl-subagents'), statCols, statRows(DATA.by_subagent_type));
+  table($('tbl-skills'), statCols, statRows(DATA.by_skill));
+})();
+</script>
+</body>
+</html>
