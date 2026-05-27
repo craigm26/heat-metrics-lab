@@ -1,0 +1,667 @@
+{
+  "structure": {
+    "n_chapters": 9,
+    "per_chapter_h": [
+      {
+        "ch": "0",
+        "h1": 1,
+        "h2": 0,
+        "h3": 0
+      },
+      {
+        "ch": "1",
+        "h1": 0,
+        "h2": 1,
+        "h3": 0
+      },
+      {
+        "ch": "2",
+        "h1": 0,
+        "h2": 1,
+        "h3": 0
+      },
+      {
+        "ch": "3",
+        "h1": 0,
+        "h2": 1,
+        "h3": 0
+      },
+      {
+        "ch": "4",
+        "h1": 0,
+        "h2": 1,
+        "h3": 0
+      },
+      {
+        "ch": "5",
+        "h1": 0,
+        "h2": 1,
+        "h3": 0
+      },
+      {
+        "ch": "6",
+        "h1": 0,
+        "h2": 1,
+        "h3": 3
+      },
+      {
+        "ch": "7",
+        "h1": 0,
+        "h2": 1,
+        "h3": 0
+      },
+      {
+        "ch": "8",
+        "h1": 0,
+        "h2": 1,
+        "h3": 0
+      }
+    ],
+    "aria_live_polite": 4,
+    "aria_live_assertive": 0,
+    "citation_chips": [
+      {
+        "text": "Stevenson 1864",
+        "aria_describedby": null,
+        "aria_label": "Citation: stevenson. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "WMO-No. 8",
+        "aria_describedby": null,
+        "aria_label": "Citation: wmo-cimo. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "OSHA CPL 03-00-024-0, Heat NEP",
+        "aria_describedby": null,
+        "aria_label": "Citation: osha-nep. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "Steadman 1979",
+        "aria_describedby": null,
+        "aria_label": "Citation: steadman-1979. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "NWS SR-90",
+        "aria_describedby": null,
+        "aria_label": "Citation: rothfusz-1990. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "CPL 03-00-024-0",
+        "aria_describedby": null,
+        "aria_label": "Citation: osha-nep. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "Federal Register NPRM",
+        "aria_describedby": null,
+        "aria_label": "Citation: fed-nprm-2024. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "Yaglou & Minard 1957",
+        "aria_describedby": null,
+        "aria_label": "Citation: yaglou-minard-1957. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "NIOSH 2016-106 \u00a76",
+        "aria_describedby": null,
+        "aria_label": "Citation: niosh-2016-106. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "ACGIH 2025 TLV",
+        "aria_describedby": null,
+        "aria_label": "Citation: acgih-tlv. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "ISO 7243",
+        "aria_describedby": null,
+        "aria_label": "Citation: iso-7243. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "NIOSH 2016-106 \u00a76",
+        "aria_describedby": null,
+        "aria_label": "Citation: niosh-2016-106. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "ACGIH 2025 TLV",
+        "aria_describedby": null,
+        "aria_label": "Citation: acgih-tlv. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "NIOSH 2016-106 \u00a76",
+        "aria_describedby": null,
+        "aria_label": "Citation: niosh-2016-106. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "OSHA Heat NEP",
+        "aria_describedby": null,
+        "aria_label": "Citation: osha-nep. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "NIOSH 2016-106 \u00a76",
+        "aria_describedby": null,
+        "aria_label": "Citation: niosh-2016-106. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "ACGIH TLV documentation",
+        "aria_describedby": null,
+        "aria_label": "Citation: acgih-tlv. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "OSHA Heat NEP CPL 03-00-024-0",
+        "aria_describedby": null,
+        "aria_label": "Citation: osha-nep. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "Federal NPRM 2024",
+        "aria_describedby": null,
+        "aria_label": "Citation: fed-nprm-2024. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "NIOSH 2016-106",
+        "aria_describedby": null,
+        "aria_label": "Citation: niosh-2016-106. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "ACGIH 2025 TLV",
+        "aria_describedby": null,
+        "aria_label": "Citation: acgih-tlv. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "ISO 7243",
+        "aria_describedby": null,
+        "aria_label": "Citation: iso-7243. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "ACGIH TLV",
+        "aria_describedby": null,
+        "aria_label": "Citation: acgih-tlv. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "WMO-No. 8",
+        "aria_describedby": null,
+        "aria_label": "Citation: wmo-cimo. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "NIOSH 2016-106 \u00a76",
+        "aria_describedby": null,
+        "aria_label": "Citation: niosh-2016-106. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "Federal NPRM 2024",
+        "aria_describedby": null,
+        "aria_label": "Citation: fed-nprm-2024. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      },
+      {
+        "text": "ACGIH 2025 TLV",
+        "aria_describedby": null,
+        "aria_label": "Citation: acgih-tlv. Hover or focus for details.",
+        "role": "button",
+        "tabindex": "0"
+      }
+    ],
+    "skip_link": false,
+    "lang_attr": "en",
+    "page_title": "heat-metrics-lab \u2014 air temperature, heat index, WBGT"
+  },
+  "keyboard_ch4": {
+    "focusables": [
+      {
+        "tag": "BUTTON",
+        "cls": "scenario-flipper__chip is-active",
+        "text": "Phoenix, AZ \u2014 Aug, 12:00, full sun",
+        "tabindex": null,
+        "aria_pressed": null,
+        "aria_label": null
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "scenario-flipper__chip ",
+        "text": "Houston, TX \u2014 Aug, 6:00 am, humid dawn",
+        "tabindex": null,
+        "aria_pressed": null,
+        "aria_label": null
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "scenario-flipper__chip ",
+        "text": "Yuma, AZ \u2014 field crew, 2:00 pm, full sun",
+        "tabindex": null,
+        "aria_pressed": null,
+        "aria_label": null
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "scenario-flipper__chip ",
+        "text": "Indoor warehouse \u2014 3:00 pm, no ventilati",
+        "tabindex": null,
+        "aria_pressed": null,
+        "aria_label": null
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "scenario-flipper__chip ",
+        "text": "Lytton, BC \u2014 June 29 2021 heat dome peak",
+        "tabindex": null,
+        "aria_pressed": null,
+        "aria_label": null
+      },
+      {
+        "tag": "CITE",
+        "cls": "citation-chip",
+        "text": "NIOSH 2016-106 \u00a76",
+        "tabindex": "0",
+        "aria_pressed": null,
+        "aria_label": "Citation: niosh-2016-106. Hover or focus for details."
+      },
+      {
+        "tag": "CITE",
+        "cls": "citation-chip",
+        "text": "OSHA Heat NEP",
+        "tabindex": "0",
+        "aria_pressed": null,
+        "aria_label": "Citation: osha-nep. Hover or focus for details."
+      },
+      {
+        "tag": "CITE",
+        "cls": "citation-chip",
+        "text": "NIOSH 2016-106 \u00a76",
+        "tabindex": "0",
+        "aria_pressed": null,
+        "aria_label": "Citation: niosh-2016-106. Hover or focus for details."
+      },
+      {
+        "tag": "CITE",
+        "cls": "citation-chip",
+        "text": "ACGIH TLV documentation",
+        "tabindex": "0",
+        "aria_pressed": null,
+        "aria_label": "Citation: acgih-tlv. Hover or focus for details."
+      }
+    ],
+    "arrow_right": {
+      "before": "Phoenix, AZ \u2014 Aug, 12:00, full sun",
+      "after": "Phoenix, AZ \u2014 Aug, 12:00, full sun",
+      "changed": false
+    }
+  },
+  "keyboard_ch7": {
+    "focusables": [
+      {
+        "tag": "BUTTON",
+        "type": "button",
+        "aria_label": "",
+        "cls": "is-active",
+        "text": "Manual sliders"
+      },
+      {
+        "tag": "BUTTON",
+        "type": "button",
+        "aria_label": "",
+        "cls": "",
+        "text": "My location"
+      },
+      {
+        "tag": "INPUT",
+        "type": "range",
+        "aria_label": "Air temperature in \u00b0C",
+        "cls": "",
+        "text": ""
+      },
+      {
+        "tag": "INPUT",
+        "type": "range",
+        "aria_label": "Relative humidity in %",
+        "cls": "",
+        "text": ""
+      },
+      {
+        "tag": "INPUT",
+        "type": "range",
+        "aria_label": "Wind speed in mph",
+        "cls": "",
+        "text": ""
+      },
+      {
+        "tag": "INPUT",
+        "type": "range",
+        "aria_label": "Solar irradiance in W/m\u00b2",
+        "cls": "",
+        "text": ""
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "aria_label": "Latitude, longitude",
+        "cls": "live-nws__input",
+        "text": ""
+      },
+      {
+        "tag": "BUTTON",
+        "type": "button",
+        "aria_label": "",
+        "cls": "live-nws__submit",
+        "text": "Fetch"
+      },
+      {
+        "tag": "BUTTON",
+        "type": "button",
+        "aria_label": "",
+        "cls": "live-nws__preset",
+        "text": "Phoenix, AZ"
+      },
+      {
+        "tag": "BUTTON",
+        "type": "button",
+        "aria_label": "",
+        "cls": "live-nws__preset",
+        "text": "Houston, TX"
+      },
+      {
+        "tag": "CITE",
+        "type": "",
+        "aria_label": "Citation: iso-7243. Hover or focus for details.",
+        "cls": "citation-chip",
+        "text": "ISO 7243"
+      },
+      {
+        "tag": "CITE",
+        "type": "",
+        "aria_label": "Citation: acgih-tlv. Hover or focus for details.",
+        "cls": "citation-chip",
+        "text": "ACGIH TLV"
+      },
+      {
+        "tag": "CITE",
+        "type": "",
+        "aria_label": "Citation: wmo-cimo. Hover or focus for details.",
+        "cls": "citation-chip",
+        "text": "WMO-No. 8"
+      }
+    ]
+  },
+  "focus_ring_samples": [
+    {
+      "tag": "BUTTON",
+      "cls": "scenario-flipper__chip is-acti",
+      "outline": "rgb(112, 36, 36) solid 2px",
+      "outline_width": "2px",
+      "box_shadow": "none"
+    },
+    {
+      "tag": "BUTTON",
+      "cls": "scenario-flipper__chip ",
+      "outline": "rgb(112, 36, 36) solid 2px",
+      "outline_width": "2px",
+      "box_shadow": "none"
+    },
+    {
+      "tag": "BUTTON",
+      "cls": "scenario-flipper__chip ",
+      "outline": "rgb(112, 36, 36) solid 2px",
+      "outline_width": "2px",
+      "box_shadow": "none"
+    },
+    {
+      "tag": "BUTTON",
+      "cls": "scenario-flipper__chip ",
+      "outline": "rgb(112, 36, 36) solid 2px",
+      "outline_width": "2px",
+      "box_shadow": "none"
+    },
+    {
+      "tag": "BUTTON",
+      "cls": "scenario-flipper__chip ",
+      "outline": "rgb(112, 36, 36) solid 2px",
+      "outline_width": "2px",
+      "box_shadow": "none"
+    },
+    {
+      "tag": "BUTTON",
+      "cls": "is-active",
+      "outline": "rgb(112, 36, 36) solid 2px",
+      "outline_width": "2px",
+      "box_shadow": "none"
+    },
+    {
+      "tag": "BUTTON",
+      "cls": "",
+      "outline": "rgb(112, 36, 36) solid 2px",
+      "outline_width": "2px",
+      "box_shadow": "none"
+    },
+    {
+      "tag": "BUTTON",
+      "cls": "is-active",
+      "outline": "rgb(112, 36, 36) solid 2px",
+      "outline_width": "2px",
+      "box_shadow": "none"
+    },
+    {
+      "tag": "BUTTON",
+      "cls": "",
+      "outline": "rgb(112, 36, 36) solid 2px",
+      "outline_width": "2px",
+      "box_shadow": "none"
+    },
+    {
+      "tag": "INPUT",
+      "cls": "",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "outline_width": "1px",
+      "box_shadow": "none"
+    }
+  ],
+  "contrast": [
+    {
+      "name": "body p",
+      "sel": "p",
+      "fg": "rgb(61, 58, 51)",
+      "bg": "rgb(245, 239, 223)",
+      "ratio": 9.88,
+      "font_size": "26px",
+      "font_weight": "400",
+      "wcag_AA_normal": true,
+      "wcag_AAA_normal": true
+    },
+    {
+      "name": "chapter h1",
+      "sel": "[data-chapter] h1",
+      "fg": "rgb(27, 27, 27)",
+      "bg": "rgb(245, 239, 223)",
+      "ratio": 15.01,
+      "font_size": "88px",
+      "font_weight": "700",
+      "wcag_AA_normal": true,
+      "wcag_AAA_normal": true
+    },
+    {
+      "name": "chapter subtitle",
+      "sel": ".chapter__subtitle, .chapter__intro",
+      "missing": true
+    },
+    {
+      "name": "citation chip",
+      "sel": "cite.citation-chip, .citation-chip",
+      "fg": "rgb(61, 58, 51)",
+      "bg": "rgb(251, 246, 232)",
+      "ratio": 10.5,
+      "font_size": "12.75px",
+      "font_weight": "400",
+      "wcag_AA_normal": true,
+      "wcag_AAA_normal": true
+    },
+    {
+      "name": "persistent strip number",
+      "sel": ".persistent-strip__value, .three-number-strip__value",
+      "missing": true
+    },
+    {
+      "name": "three-number-strip metric label",
+      "sel": ".persistent-strip__label, .three-number-strip__label",
+      "missing": true
+    },
+    {
+      "name": "side dispatch text",
+      "sel": ".side-dispatch p, aside.side-dispatch",
+      "fg": "rgb(27, 27, 27)",
+      "bg": "rgb(251, 246, 232)",
+      "ratio": 15.95,
+      "font_size": "15px",
+      "font_weight": "400",
+      "wcag_AA_normal": true,
+      "wcag_AAA_normal": true
+    },
+    {
+      "name": "colophon link",
+      "sel": ".colophon a",
+      "fg": "rgb(112, 36, 36)",
+      "bg": "rgb(245, 239, 223)",
+      "ratio": 9.3,
+      "font_size": "15px",
+      "font_weight": "400",
+      "wcag_AA_normal": true,
+      "wcag_AAA_normal": true
+    },
+    {
+      "name": "scenario chip selected",
+      "sel": "[data-chapter=\"4\"] .scenario-flipper__chip[aria-pressed=\"true\"]",
+      "missing": true
+    },
+    {
+      "name": "scenario chip unselected",
+      "sel": "[data-chapter=\"4\"] .scenario-flipper__chip:not([aria-pressed=\"true\"])",
+      "fg": "rgb(245, 239, 223)",
+      "bg": "rgb(27, 27, 27)",
+      "ratio": 15.01,
+      "font_size": "13px",
+      "font_weight": "400",
+      "wcag_AA_normal": true,
+      "wcag_AAA_normal": true
+    }
+  ],
+  "temp_toggle": {
+    "text": "Show as \u00b0F",
+    "aria_label": null,
+    "aria_pressed": "false",
+    "id": "unit-toggle"
+  },
+  "contrast_extra": [
+    {
+      "name": "strip value (air)",
+      "sel": ".strip__value[data-strip=\"air_temp_c\"]",
+      "fg": "rgb(27, 27, 27)",
+      "bg": "rgb(245, 239, 223)",
+      "ratio": 15.01,
+      "font_size": "24px",
+      "font_weight": "500",
+      "wcag_AA_normal": true,
+      "wcag_AAA_normal": true
+    },
+    {
+      "name": "strip value (hi)",
+      "sel": ".strip__value[data-strip=\"hi_c\"]",
+      "fg": "rgb(27, 27, 27)",
+      "bg": "rgb(245, 239, 223)",
+      "ratio": 15.01,
+      "font_size": "24px",
+      "font_weight": "500",
+      "wcag_AA_normal": true,
+      "wcag_AAA_normal": true
+    },
+    {
+      "name": "strip value (wbgt)",
+      "sel": ".strip__value[data-strip=\"wbgt_c\"]",
+      "fg": "rgb(27, 27, 27)",
+      "bg": "rgb(245, 239, 223)",
+      "ratio": 15.01,
+      "font_size": "24px",
+      "font_weight": "500",
+      "wcag_AA_normal": true,
+      "wcag_AAA_normal": true
+    },
+    {
+      "name": "strip label",
+      "sel": ".strip__label",
+      "fg": "rgb(138, 130, 117)",
+      "bg": "rgb(245, 239, 223)",
+      "ratio": 3.31,
+      "font_size": "11px",
+      "font_weight": "400",
+      "wcag_AA_normal": false,
+      "wcag_AAA_normal": false
+    },
+    {
+      "name": "chapter lede",
+      "sel": ".chapter__lede",
+      "fg": "rgb(61, 58, 51)",
+      "bg": "rgb(245, 239, 223)",
+      "ratio": 9.88,
+      "font_size": "20.48px",
+      "font_weight": "400",
+      "wcag_AA_normal": true,
+      "wcag_AAA_normal": true
+    },
+    {
+      "name": "unit-toggle button",
+      "sel": "button.unit-toggle",
+      "fg": "rgb(27, 27, 27)",
+      "bg": "rgb(251, 246, 232)",
+      "ratio": 15.95,
+      "font_size": "13px",
+      "font_weight": "400",
+      "wcag_AA_normal": true,
+      "wcag_AAA_normal": true
+    }
+  ]
+}

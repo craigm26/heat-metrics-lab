@@ -25,3 +25,9 @@ dist/
 scripts/mcp_client*.py
 scripts/generate_*.py
 scripts/*_client.py
+
+# Wrangler local state
+.wrangler/
+
+# Playwright screenshot helpers
+notes/screenshots/baseline/reduced-motion-*.png

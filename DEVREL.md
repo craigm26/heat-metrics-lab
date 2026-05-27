@@ -187,6 +187,21 @@ Key finding: heat-metrics-lab consumed 180.8M tokens vs heat-protein-lab's ~483.
 
 The two pre-ship bug catches (WBGT formula via `advisor`; normalization flaw via `tufte-viz`) are unambiguous Claude-side wins — both were caught before a line of the flawed code shipped, and neither had an equivalent catch on the Google side.
 
+**Task 6.2 (a11y audit) complete.** Headless-playwright walkthrough across structure, keyboard, focus rings, and contrast. Full machine-readable report at `notes/a11y/report-2026-05-27.json`.
+
+Findings → fixes:
+- **Strip labels failed WCAG AA (3.31:1 at 11px)**. Promoted `--ink-faint` from `#8A8275` to `#6B6657` → 4.99:1. All 16 sites that use the token improve. The four other lower-contrast text spots (chip tooltip, divergence-map readout prompt, side-dispatch labels) auto-benefit from the same change.
+- **Skip-link was missing**. Added `<a class="skip-link" href="#main">Skip to content</a>` at top of `<body>` with focus-revealed CSS, plus `id="main"` on `<main>`. Verified the link becomes visible on Tab and target exists.
+- Single h1 in hero, single h2 in each of ch1-8 ✓
+- 4 `aria-live="polite"` regions for live readouts ✓
+- 27 citation chips all have `role="button"`, `tabindex="0"`, and descriptive `aria-label` ✓
+- Focus rings: 2px solid wbgt-ink outline on all interactive controls ✓
+- Unit toggle has `aria-pressed` toggle state ✓
+- `lang="en"` on `<html>` ✓
+- 9 contrast checks pass WCAG AAA (≥7:1); strip labels now pass AA (≥4.5:1) ✓
+
+Follow-up (not v1-blocking, filed): scenario flipper chips use Tab+Enter for navigation. The plan called for arrow-key flipping which is the standard `role="radiogroup"` pattern with roving tabindex. Currently functional via keyboard but doesn't satisfy the strict spec. v1.0.1 candidate.
+
 ## References
 
 - [Heat Compass console regulatory landscape](https://github.com/HeatCompass/console/blob/main/docs/REGULATORY_LANDSCAPE.md) — companion B2B context

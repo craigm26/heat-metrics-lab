@@ -10,7 +10,7 @@
   /* Ink */
   --ink: #1B1B1B;
   --ink-soft: #3D3A33;
-  --ink-faint: #8A8275;
+  --ink-faint: #6B6657;
   --rule: #221A15;
 
   /* Metric inks (the load-bearing semantic colors) */
@@ -120,6 +120,23 @@ main { display: flex; flex-direction: column; }
   }
   .chapter { opacity: 1.0; transition: none; }
 }
+
+/* ---- Skip link (a11y; hidden until focused) ---- */
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--space-2);
+  background: var(--ink);
+  color: var(--paper);
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  text-decoration: none;
+  z-index: 200;
+  border-radius: 4px;
+}
+.skip-link:focus { top: var(--space-2); outline: 2px solid var(--wbgt); outline-offset: 2px; }
 
 /* ---- Three-number strip (persistent top-of-viewport) ---- */
 
