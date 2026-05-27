@@ -35,6 +35,7 @@ If you are about to write code that violates any of those, stop and ask.
 | Skill | When to use | Notes |
 |---|---|---|
 | `frontend-design` | Polish layer, component styling, avoiding generic AI aesthetics | Installed; use before and after visual chapters |
+| `tufte-viz` | Chart design + critique passes (data-ink, lie factor, chartjunk, small multiples, sparklines, analytical design) | Community skill from aparente. Install via `notes/devrel/install-tufte-viz.sh`. Use for every chart in Phases 3-5: Ch 2 nomogram, Ch 3 thermometer rig, Ch 5 divergence map, Ch 7 sparkline mini-chart, Ch 8 NIOSH table |
 | `playground` | Ch 4 scenario flipper, Ch 7 sandbox centerpieces | Scaffolds single-state-object pattern + preset chips |
 | `scrollytelling` | Scroll-driven narrative structure, section transitions | doodledood community skill; documents scroll patterns |
 | `session-report` | End of each phase | Token usage, per-skill spend, cache metrics for `DEVREL.md` |
