@@ -40,7 +40,7 @@ Full architecture lives in [`docs/superpowers/specs/2026-05-27-heat-metrics-lab-
 
 ## Where it lives
 
-Live at **<https://heat-metrics-lab.pages.dev/>** (pending Phase 0 completion and deploy). Private until v1 polish lands.
+Live at **<https://heat-metrics-lab.pages.dev/>**. Source at **<https://github.com/craigm26/heat-metrics-lab>** (MIT). Companion craigmerry.com devrel comparison post: see `notes/devrel/post-2026-05-27-anthropic-vs-google-heat-explainer.md`.
 
 ## How to deploy it
 
