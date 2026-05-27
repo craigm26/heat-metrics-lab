@@ -216,3 +216,61 @@ main { display: flex; flex-direction: column; }
   display: block;
   margin-bottom: var(--space-2);
 }
+
+/* ---- Citation chips (lazy-loaded source metadata on hover/focus) ---- */
+
+cite.citation-chip {
+  position: relative;
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: 0.75em;
+  vertical-align: super;
+  line-height: 1;
+  background: var(--surface-card);
+  color: var(--ink-soft);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--paper-edge);
+  cursor: help;
+  margin: 0 2px;
+  transition: background-color 0.15s ease;
+}
+cite.citation-chip:hover,
+cite.citation-chip:focus-visible {
+  background: var(--paper-edge);
+  outline: none;
+}
+cite.citation-chip:focus-visible {
+  box-shadow: 0 0 0 2px var(--wbgt);
+}
+
+.citation-chip__tip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  z-index: 50;
+  display: none;
+  width: max-content;
+  max-width: min(360px, 80vw);
+  padding: 10px 12px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-style: normal;
+  line-height: 1.45;
+  vertical-align: baseline;
+  text-align: left;
+  white-space: normal;
+}
+.citation-chip__tip.is-visible { display: block; }
+.citation-chip__tip strong { font-family: var(--font-ui); font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-faint); display: block; margin-bottom: 4px; }
+.citation-chip__tip a { font-size: 0.8125rem; word-break: break-all; }
+.citation-chip__tip small { color: var(--ink-faint); font-size: 0.75rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  cite.citation-chip { transition: none; }
+}

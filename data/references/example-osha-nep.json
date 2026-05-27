@@ -1,0 +1,8 @@
+{
+  "id": "example-osha-nep",
+  "title": "OSHA Heat NEP (placeholder — real entry lands in Phase 3)",
+  "citation": "OSHA CPL 03-00-024-0, Heat National Emphasis Program, renewed 2026-04-10",
+  "url": "https://www.osha.gov/enforcement/directives/cpl-03-00-024-0",
+  "accessed_at": "2026-05-27",
+  "note": "Placeholder reference file shipped in Phase 2 for citation-chip smoke testing. Will be superseded by data/references/osha-nep.json in Phase 3 Task 3.5."
+}

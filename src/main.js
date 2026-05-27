@@ -5,16 +5,19 @@
 //   2. three-number-strip: starts listening for chapter-active events
 //   3. chapter-observer: starts the IntersectionObserver (will fire first event soon)
 //   4. temp-text: walks the DOM and wraps inline °C literals
+//   5. citation-chips: upgrades <cite data-source="..."> elements (no-op if none present)
 import { initTempToggle } from "./components/temp-toggle.js";
 import { initThreeNumberStrip } from "./components/three-number-strip.js";
 import { initChapterObserver } from "./components/chapter-observer.js";
 import { initTempText } from "./components/temp-text.js";
+import { initCitationChips } from "./components/citation-chip.js";
 
 function boot() {
   initTempToggle();
   initThreeNumberStrip();
   initChapterObserver();
   initTempText();
+  initCitationChips();
   // Visible boot marker for sanity-check in DevTools
   console.info("heat-metrics-lab — phase 2 skeleton booted");
 }
