@@ -95,6 +95,18 @@ Token spend (approximate, full breakdown from `session-report` later): Dispatch 
 
 Phase 2 closeout state: scrollytelling skeleton runs in-browser (smoke test pending push to Cloudflare Pages); all five components syntax-check via `node --check`; foundation is ready for Phase 3/4/5 to fan out in parallel.
 
+### Phase 2.5 mid-session finding — `tufte-viz` skill (aparente)
+
+Mid-session, the operator surfaced [aparente's `tufte-viz` skill gist](https://gist.github.com/aparente/e48c353755958621b3c0004593105a90) — Edward Tufte's data visualization principles packaged as a Claude Code skill. Anthropic author. Already-shipped, well-built. Two reference files (~13 KB total) covering the canonical Tufte principles (data-ink, chartjunk, integrity, small multiples, density, multifunctioning elements, aesthetics + the 7-question Tufte Test) plus analytical-design extensions (six principles of analytical design, sparklines, layering, micro/macro, range-frames, confections, causality + extended 14-question test).
+
+**Why it matters for this build:** heat-metrics-lab has five chart-class artifacts remaining (Ch 2 nomogram, Ch 3 three-thermometer rig, Ch 5 divergence map, Ch 7 sparkline mini-chart, Ch 8 NIOSH table) + the three-number-strip. Every one of them is a near-direct application of one of Tufte's principles. Installing `tufte-viz` and running a critique pass before each chart's implementation is a concrete, low-risk quality win for Phases 3-5.
+
+**Why it matters for the devrel A/B:** the Google-side build (heat-protein-lab) used `science-skills` for *data* (PDB structures, ClinVar variants, Reactome pathways) but had no equivalent guidance for *visualization quality*. Charts were vibes-judged. The Anthropic ecosystem has Tufte-grade chart guidance available as a community skill — meaningful axis for the post.
+
+Install path captured at [`notes/devrel/install-tufte-viz.sh`](../../notes/devrel/install-tufte-viz.sh) — the gist isn't in a Claude marketplace, so the script clones the four files into `~/.claude/skills/tufte-viz/` manually. Run + restart Claude Code in the next session.
+
+**Gaps surfaced:** `tufte-viz` is print-tradition. It doesn't address (1) scroll-driven progressive reveal, (2) interactive controls coexisting with data display, (3) citation discipline integrated into the chart. If those gaps actually bite during Phase 3-5 (not in the abstract), a complementary `narrative-charts` skill is a Phase 6 follow-up candidate.
+
 ### Phase 3 observations
 
 _To come._
