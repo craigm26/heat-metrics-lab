@@ -109,7 +109,17 @@ Install path captured at [`notes/devrel/install-tufte-viz.sh`](../../notes/devre
 
 ### Phase 3 observations
 
-_To come._
+Two implementer dispatches (both Sonnet) + one manual commit-and-push pass for the diagrams. Three diagrams + three chapters + ten new citation reference files, six commits total.
+
+**Dispatch G** (diagrams, ~83k tokens) — produced `scripts/04_render_diagrams.py` with three matplotlib render functions: Stevenson screen, NWS heat-index nomogram, three-thermometer rig. The implementer **invoked tufte-viz at design time and again as a critique pass** per the dispatch instruction. The output included a detailed eraser-test/collision-test/7-question Tufte walk through the nomogram. The implementer hit a thinking budget and stopped before committing — the three SVGs and the script were on disk but uncommitted. **Controller (me) finished the commit pass** with one commit per diagram, putting the applied Tufte principle in each commit message (`f59c370` layering; `096d198` range-frame + comparison; `fc88d8c` multifunctioning color). This is a real workflow note for the comparison post: the "subagent generates + critiques but stops short of commit" pattern is recoverable but adds controller overhead.
+
+**Dispatch H** (Act I prose, ~70k tokens) — produced ~1,500 words of body prose across Ch 1, 2, 3 plus 10 citation reference JSON files (Stevenson 1864, WMO CIMO, OSHA NEP CPL 03-00-024-0, Steadman 1979, Rothfusz 1990 NWS SR-90, Federal NPRM 2024, Yaglou-Minard 1957, NIOSH 2016-106, ACGIH TLV, ISO 7243). Three commits, one per chapter. Word counts within target ranges (Ch 1 379, Ch 2 472, Ch 3 554). Side dispatches in `<aside class="side-dispatch">` voiced for EHS practitioners with embedded `<cite>` chips.
+
+**Smoke test passed inline**: 3/3 SVG embeds resolve, 10/10 `<cite data-source>` attributes have matching JSON files, 7/7 JS modules syntax-check, drift gate still PASS (24/24 cases), 8/8 critical assets serve 200 OK via local `http.server`.
+
+**Tufte-viz skill verdict so far:** delivers real analysis-shaped output rather than generic praise. The nomogram critique caught a specific potential collision between an annotation box and a contour line in the lower-right zone — a concrete actionable finding, not vibes. The skill's "eraser test" + "collision test" + "7-question Tufte test" structure forces the implementer to walk through specific reasoning. Strong devrel data point: this kind of structured critique was absent in the Google-side build (heat-protein-lab chart-design pass was visual-inspection-only).
+
+**One follow-up flagged for Phase 6:** the `°F` literals in side dispatches stay as `°F` regardless of the C/F toggle state (the `temp-text.js` walker only matches `°C` literals). For regulatory quotes (e.g., "OSHA Heat NEP triggers at HI ≥80 °F"), keeping the source-document units is arguably correct — but it creates a slight UX inconsistency. Phase 6 polish: either (a) document the convention explicitly ("regulatory quotes use source-document units"), (b) extend `temp-text.js` to also handle `°F` and convert bidirectionally, or (c) add parenthetical conversions next to regulatory thresholds. Not blocking v1 ship.
 
 ### Phase 4 observations
 
