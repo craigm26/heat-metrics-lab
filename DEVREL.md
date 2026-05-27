@@ -66,7 +66,14 @@ _Note: heat-protein-lab telemetry is derived from the by-day bucket for 2026-05-
 
 ## Comparison post
 
-The final A/B write-up will be drafted at v1 polish and published to both [craigmerry.com/blog/](https://craigmerry.com/blog/) and mirrored at `posts/` in this repo. It will be honest about wins and losses on both sides — that's the whole point of running the A/B in good faith.
+The full launch series — four long-form posts, ~11k words combined, dry/technical voice — published to [craigmerry.com](https://craigmerry.com/blog/) on 2026-05-27 via commit `367107d` to `craigm26/personalsite`:
+
+- [Heat Metrics Lab is live](https://craigmerry.com/blog/2026-05-27-heat-metrics-lab-shipped/) — project announcement, ~3,175 words
+- [A 0.5 °F drift gate, and the advisor that caught the formula bug](https://craigmerry.com/blog/2026-05-27-the-drift-gate-and-the-advisor/) — Phase 1 deep-dive, ~2,883 words
+- [When a chart-critique skill catches a design bug before ship](https://craigmerry.com/blog/2026-05-27-when-a-chart-skill-catches-a-design-bug/) — Phase 4 deep-dive, ~2,656 words
+- [Same brief, two toolchains](https://craigmerry.com/blog/2026-05-27-same-brief-two-toolchains/) — HML vs HPL A/B, ~2,490 words
+
+The `posts/` HTML mirror inside this repo was deferred (no post.css / posts/index.html infrastructure yet); the canonical home is craigmerry.com.
 
 ## Phase observations
 
