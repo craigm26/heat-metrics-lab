@@ -81,7 +81,19 @@ Skill stack used in Phase 1:
 
 ### Phase 2 observations
 
-_To come._
+Three implementer dispatches, all Sonnet, all DONE in one round each:
+
+- **Dispatch D** (`ca629e8`, 307 lines): full brand stylesheet + 9 chapter section stubs with structured `data-readings='{...}'` JSON + persistent strip markup + unit-toggle button. The `data-readings` schema decision (Ch 1 = air only, Ch 2 = air+HI, Ch 3+ = all three) lived in the dispatch prompt as inline guidance — the implementer carried it through faithfully.
+- **Dispatch E** (`4d2db03`, 219 lines): five JS components — temp-toggle, temp-text auto-wrap, chapter-observer (IntersectionObserver), three-number-strip, main.js boot. The non-obvious wiring detail caught in the dispatch prompt before code was written: the hero markup uses an element-node sibling for the `°C` suffix (`<span class="hero-numbers__unit"> °C</span>`), so `rerenderAll`'s sibling-loop needs to handle both text-node AND element-node siblings to repaint correctly. This was identified pre-implementation and resolved cleanly.
+- **Dispatch F** (`1c2fda8`, 163 lines): citation-chip helper with lazy-loaded source metadata + tooltip styles + example reference JSON. Fully a11y-tested (role/tabindex/aria-label/aria-pressed; Escape key dismiss; both hover and focus triggers).
+
+Skipped formal subagent-driven spec reviews on Dispatch D and E in favor of inline `grep` verification — the dispatches were structurally explicit enough (verbatim CSS/HTML/JS in the prompt) that the spec compliance check reduced to "did the implementer write what was prescribed" which is fast to verify by reading the diff. This is a deviation from strict subagent-driven-dev that I'll note in the comparison post: with prompts that fully specify the artifact, the spec-review stage's marginal value drops. For algorithmic work (Phase 1 formula correctness, Phase 4 scenario fetcher, etc.) the spec review keeps its full value.
+
+`scrollytelling` skill from doodledood was NOT used — Phase 2 worked directly from heat-protein-lab's hand-rolled IntersectionObserver pattern (which is well-understood and works). This is itself a finding: the precedent project's mechanics carry over cleanly enough that a dedicated scrollytelling skill is supplementary, not load-bearing.
+
+Token spend (approximate, full breakdown from `session-report` later): Dispatch D ~41k, Dispatch E ~43k, Dispatch F ~35k. Phase 2 total ~120k. Markedly cheaper per dispatch than Phase 1 because Phase 2 is structurally explicit (markup + components with predetermined shapes) while Phase 1 involved formula tuning + cross-implementation validation.
+
+Phase 2 closeout state: scrollytelling skeleton runs in-browser (smoke test pending push to Cloudflare Pages); all five components syntax-check via `node --check`; foundation is ready for Phase 3/4/5 to fan out in parallel.
 
 ### Phase 3 observations
 
