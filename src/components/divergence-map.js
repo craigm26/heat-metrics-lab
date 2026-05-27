@@ -65,9 +65,18 @@ export async function initDivergenceMap() {
  *   WBGT: 28 °C (NIOSH heavy-work warning)
  */
 function dominantMetric(cell, air_temp_c) {
-  const sev_air  = Math.max(0, (air_temp_c   - 35.0) / 35.0);
-  const sev_hi   = Math.max(0, (cell.hi_c    - 32.2) / 32.2);
-  const sev_wbgt = Math.max(0, (cell.wbgt_c  - 28.0) / 28.0);
+  // Normalize each metric by its dynamic range above threshold so the three
+  // compete on equal footing. WBGT's physical ceiling (~35 °C) is much lower
+  // than HI's (~60 °C), so threshold-relative normalization would let HI
+  // out-breach WBGT almost everywhere — which would hide the educational
+  // point of the map (that WBGT diverges from HI in dry-hot-sunny conditions).
+  // Range-relative normalization restores parity.
+  //   Air:  35 → 50 °C (warm → lethal)
+  //   HI:   32.2 → 54 °C (HI 90 °F → HI 130 °F NWS danger ceiling)
+  //   WBGT: 28 → 35 °C (NIOSH moderate → ACGIH heavy-work ceiling)
+  const sev_air  = Math.max(0, (air_temp_c   - 35.0) / (50.0 - 35.0));
+  const sev_hi   = Math.max(0, (cell.hi_c    - 32.2) / (54.0 - 32.2));
+  const sev_wbgt = Math.max(0, (cell.wbgt_c  - 28.0) / (35.0 - 28.0));
   if (sev_air === 0 && sev_hi === 0 && sev_wbgt === 0) return "none";
   if (sev_wbgt >= sev_hi && sev_wbgt >= sev_air) return "wbgt";
   if (sev_hi   >= sev_air) return "heat-index";
