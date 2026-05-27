@@ -4,7 +4,7 @@
 
 ## Project overview
 
-A single, vanilla-HTML scrollytelling page that walks readers through what three core heat metrics measure, what each is blind to, and why the wall thermometer is the worst choice for any decision that matters. Nine chapters (Ch 0–8) across three acts: Anatomy (what each metric is) → Divergence (where they disagree) → Application (how to use them). Client-side JS re-implements Rothfusz 1990 Heat Index and Liljegren-simplified WBGT, validated against Python computations via a 0.5 °F CI drift gate. Cloudflare Pages auto-deploy from `master`.
+A single, vanilla-HTML scrollytelling page that walks readers through what three core heat metrics measure, what each is blind to, and why the wall thermometer is the worst choice for any decision that matters. Nine chapters (Ch 0–8) across three acts: Anatomy (what each metric is) → Divergence (where they disagree) → Application (how to use them). Client-side JS re-implements Rothfusz 1990 Heat Index and Liljegren-simplified WBGT, validated against Python computations via a 0.5 °F CI drift gate. Cloudflare Pages deploys are operator-local via `wrangler pages deploy`.
 
 ## Build phases and dependencies
 
