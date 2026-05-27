@@ -1,0 +1,32 @@
+{
+  "id": "indoor-warehouse-3pm",
+  "label": "Indoor warehouse \u2014 3:00 pm, no ventilation",
+  "location": {
+    "name": "Generic US warehouse (indoor)",
+    "lat": null,
+    "lng": null
+  },
+  "ts_local": "2024-08-12T15:00:00",
+  "inputs": {
+    "air_temp_c": 29.4,
+    "rh_pct": 65,
+    "wind_mph": 0,
+    "solar_w_m2": 0
+  },
+  "outdoor": false,
+  "source": {
+    "method": "hand-curated",
+    "basis": "ACGIH TLV documentation; published warehouse heat-stress case studies",
+    "matches_reference_case": "warehouse-indoor",
+    "accessed_at": "2026-05-27"
+  },
+  "derived": {
+    "hi_c": 32.63,
+    "wbgt_c": 25.8,
+    "wbgt_kind": "indoor"
+  },
+  "decision_hooks": {
+    "niosh_work_rest_heavy": "45-min work / 15-min rest",
+    "osha_nep_priority_day": true
+  }
+}

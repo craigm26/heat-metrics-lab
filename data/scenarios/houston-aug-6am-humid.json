@@ -1,0 +1,31 @@
+{
+  "id": "houston-aug-6am-humid",
+  "label": "Houston, TX \u2014 Aug, 6:00 am, humid dawn",
+  "location": {
+    "name": "Houston, TX",
+    "lat": 29.76,
+    "lng": -95.37
+  },
+  "ts_local": "2024-08-12T06:00:00-05:00",
+  "inputs": {
+    "air_temp_c": 28.0,
+    "rh_pct": 92,
+    "wind_mph": 2,
+    "solar_w_m2": 0
+  },
+  "outdoor": true,
+  "source": {
+    "method": "hand-curated",
+    "basis": "NOAA NWS Houston climatological dawn humidity",
+    "accessed_at": "2026-05-27"
+  },
+  "derived": {
+    "hi_c": 34.46,
+    "wbgt_c": 27.25,
+    "wbgt_kind": "indoor"
+  },
+  "decision_hooks": {
+    "niosh_work_rest_heavy": "30-min work / 30-min rest",
+    "osha_nep_priority_day": true
+  }
+}

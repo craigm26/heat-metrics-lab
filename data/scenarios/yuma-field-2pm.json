@@ -1,0 +1,31 @@
+{
+  "id": "yuma-field-2pm",
+  "label": "Yuma, AZ \u2014 field crew, 2:00 pm, full sun",
+  "location": {
+    "name": "Yuma, AZ",
+    "lat": 32.69,
+    "lng": -114.63
+  },
+  "ts_local": "2024-08-12T14:00:00-07:00",
+  "inputs": {
+    "air_temp_c": 44.0,
+    "rh_pct": 14,
+    "wind_mph": 5,
+    "solar_w_m2": 950
+  },
+  "outdoor": true,
+  "source": {
+    "method": "hand-curated",
+    "basis": "NOAA NWS Yuma climatological peak; UFW worker advocacy reports",
+    "accessed_at": "2026-05-27"
+  },
+  "derived": {
+    "hi_c": 42.65,
+    "wbgt_c": 31.05,
+    "wbgt_kind": "outdoor"
+  },
+  "decision_hooks": {
+    "niosh_work_rest_heavy": "stop work \u2014 exposure exceeds NIOSH heavy-work ceiling",
+    "osha_nep_priority_day": true
+  }
+}

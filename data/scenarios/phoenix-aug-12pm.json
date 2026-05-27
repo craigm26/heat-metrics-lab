@@ -1,0 +1,32 @@
+{
+  "id": "phoenix-aug-12pm",
+  "label": "Phoenix, AZ \u2014 Aug, 12:00, full sun",
+  "location": {
+    "name": "Phoenix, AZ",
+    "lat": 33.45,
+    "lng": -112.07
+  },
+  "ts_local": "2024-08-12T12:00:00-07:00",
+  "inputs": {
+    "air_temp_c": 42.2,
+    "rh_pct": 18,
+    "wind_mph": 4,
+    "solar_w_m2": 870
+  },
+  "outdoor": true,
+  "source": {
+    "method": "hand-curated",
+    "basis": "NOAA NWS Phoenix climatological avg + Aug 2024 observed peak",
+    "matches_reference_case": "phoenix-aug-12pm",
+    "accessed_at": "2026-05-27"
+  },
+  "derived": {
+    "hi_c": 41.83,
+    "wbgt_c": 30.88,
+    "wbgt_kind": "outdoor"
+  },
+  "decision_hooks": {
+    "niosh_work_rest_heavy": "stop work \u2014 exposure exceeds NIOSH heavy-work ceiling",
+    "osha_nep_priority_day": true
+  }
+}

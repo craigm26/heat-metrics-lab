@@ -1,0 +1,32 @@
+{
+  "id": "lytton-bc-2021-5pm",
+  "label": "Lytton, BC \u2014 June 29 2021 heat dome peak, ~5:00 pm",
+  "location": {
+    "name": "Lytton, BC",
+    "lat": 50.23,
+    "lng": -121.58
+  },
+  "ts_local": "2021-06-29T17:00:00-07:00",
+  "inputs": {
+    "air_temp_c": 49.6,
+    "rh_pct": 12,
+    "wind_mph": 6,
+    "solar_w_m2": 950
+  },
+  "outdoor": true,
+  "source": {
+    "method": "hand-curated",
+    "basis": "Environment and Climate Change Canada observations, June 29 2021",
+    "matches_reference_case": "lytton-bc-2021",
+    "accessed_at": "2026-05-27"
+  },
+  "derived": {
+    "hi_c": 48.8,
+    "wbgt_c": 34.31,
+    "wbgt_kind": "outdoor"
+  },
+  "decision_hooks": {
+    "niosh_work_rest_heavy": "stop work \u2014 exposure exceeds NIOSH heavy-work ceiling",
+    "osha_nep_priority_day": true
+  }
+}
