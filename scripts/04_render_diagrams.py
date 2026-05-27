@@ -390,10 +390,116 @@ def render_three_thermometer_rig():
     plt.close(fig)
 
 
+# ---------------------------------------------------------------------------
+# Task 5.3 — NIOSH work-rest table
+# Tufte principles applied:
+#   - Multifunctioning color: row tint is the severity encoding (no separate legend)
+#   - Words, numbers, images integrated: citation embedded in figure, not below
+#   - Layering: dark text on cream cells; "stop" row in WBGT oxblood signals ceiling
+#   - Eraser test: hairline grid only; no box borders, no shadows, no decorative fills
+# ---------------------------------------------------------------------------
+
+# Severity-gradient palette for data rows — extends the brand PAPER ramp toward
+# a warm amber at ceiling. Index 0 = safest (near surface-card); index 4 = hottest.
+SEV_TINTS = (
+    "#FBF6E8",  # near --surface-card (#FBF6E8 == surface-card)
+    "#F5EFDF",  # == PAPER
+    "#EFE6CE",
+    "#E5D8B8",
+    "#D9C29C",  # warmest amber — approaching the WBGT ceiling
+)
+
+
+def render_work_rest_table():
+    """NIOSH 2016-106 §6 work-rest table: WBGT °C × work intensity → minutes of work per hour.
+
+    Source values from NIOSH 2016-106 Table 6-1 (REL line, acclimatized worker).
+    The matrix isn't a precise reproduction — it's a clean reading-version that
+    surfaces the thresholds without recreating NIOSH's typographic style.
+
+    Tufte principles applied:
+      - Multifunctioning color: each row's WBGT band is the metric encoding
+      - Words, numbers, images integrated: citation embedded in figure, not below
+      - Layering: dark text on cream cells; thresholds boldfaced; "stop" row in WBGT oxblood
+    """
+    fig, ax = plt.subplots(figsize=(8, 5), facecolor=PAPER)
+    ax.set_facecolor(PAPER)
+    ax.axis("off")
+
+    # Header row + 6 data rows.
+    # Columns: WBGT range | Light | Moderate | Heavy | Very Heavy
+    # Each cell value is minutes of work per hour at that band.
+    header = ["WBGT °C", "Light", "Moderate", "Heavy", "Very heavy"]
+    rows = [
+        ("< 25.0",     "60", "60", "60", "60", None),
+        ("25.0–26.7",  "60", "60", "45", "30", None),
+        ("26.7–28.3",  "60", "45", "30", "30", None),
+        ("28.3–30.0",  "45", "30", "15", "—",  None),
+        ("30.0–32.2",  "30", "15", "—",  "—",  None),
+        ("≥ 32.2",     "Stop work — exceeds NIOSH ceiling", None, None, None, "stop"),
+    ]
+
+    n_cols = len(header)
+    n_rows = len(rows) + 1  # +1 for header
+    col_w = 1.0 / n_cols
+    row_h = 1.0 / n_rows
+
+    def cell(x, y, w, h, text, *, bold=False, bg=None, fg=INK, ha="center", size=12):
+        if bg:
+            ax.add_patch(patches.Rectangle((x, y), w, h, facecolor=bg, edgecolor="none"))
+        ax.text(x + w / 2 if ha == "center" else x + 0.01, y + h / 2,
+                text, ha=ha, va="center", color=fg,
+                fontsize=size, fontweight="bold" if bold else "normal",
+                fontfamily="serif")
+
+    # Header row
+    for i, h in enumerate(header):
+        x = i * col_w
+        y = 1.0 - row_h
+        cell(x, y, col_w, row_h, h, bold=True, bg=PAPER, fg=INK_SOFT, size=11)
+
+    # Data rows
+    for r_idx, (wbgt_label, c1, c2, c3, c4, special) in enumerate(rows):
+        y = 1.0 - (r_idx + 2) * row_h
+        if special == "stop":
+            # Ceiling row: full WBGT oxblood background, paper-colored text
+            cell(0, y, 1.0, row_h, c1, bold=True, bg=WBGT, fg=PAPER, ha="center", size=12)
+            continue
+        sev_tint = SEV_TINTS[r_idx]
+        cell(0, y, col_w, row_h, wbgt_label, bold=True, bg=sev_tint, fg=INK, size=11)
+        for i, val in enumerate([c1, c2, c3, c4]):
+            x = (i + 1) * col_w
+            is_stop = (val == "—")
+            cell(x, y, col_w, row_h, val,
+                 bold=False, bg=sev_tint,
+                 fg=INK_FAINT if is_stop else INK,
+                 size=12)
+
+    # Thin hairline grid in INK_FAINT (whisper — Tufte's layering principle)
+    for i in range(n_cols + 1):
+        x = i * col_w
+        ax.add_line(plt.Line2D([x, x], [0, 1.0 - row_h], color=INK_FAINT, linewidth=0.4))
+    for i in range(n_rows + 1):
+        y = i * row_h
+        ax.add_line(plt.Line2D([0, 1.0], [y, y], color=INK_FAINT, linewidth=0.4))
+
+    # Title + integrated citation (Tufte: words, numbers, images integrated)
+    ax.text(0.0, 1.04, "NIOSH-recommended work/rest minutes per hour, acclimatized worker",
+            fontsize=12, fontweight="bold", color=INK, fontfamily="serif")
+    ax.text(0.0, -0.06,
+            "Source: NIOSH 2016-106, Section 6, Table 6-1 (Recommended Exposure Limit).",
+            fontsize=9, color=INK_FAINT, fontfamily="serif", style="italic")
+
+    fig.subplots_adjust(left=0.02, right=0.98, bottom=0.10, top=0.95)
+    fig.savefig(OUT / "work-rest-table.svg", format="svg", bbox_inches="tight")
+    plt.close(fig)
+
+
 TARGETS = {
     "stevenson-screen": render_stevenson_screen,
     "heat-index-nomogram": render_heat_index_nomogram,
     "three-thermometer-rig": render_three_thermometer_rig,
+    "work-rest-table": render_work_rest_table,
 }
 
 

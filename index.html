@@ -250,10 +250,30 @@
 
     <!-- Ch 8 — Practitioner. All three live. -->
     <section class="chapter" data-chapter="8" data-act="application" data-metric="all"
-             data-readings='{"air_temp_c":42.2,"hi_c":41.83,"wbgt_c":30.88}'>
+             data-readings='{"air_temp_c":35,"hi_c":40.6,"wbgt_c":27.8}'>
       <div class="chapter__inner">
         <h2 class="chapter__title">How professionals use these</h2>
-        <p class="chapter__placeholder">Practitioner body + work/rest table land in Phase 5.</p>
+
+        <p>The previous chapters introduced three metrics and the divergence between them. This chapter is for the practitioners — the safety officers, compliance specialists, EHS managers, and field inspectors who have to convert these numbers into specific work/rest decisions on specific days.</p>
+
+        <p>The short version: the wall thermometer is the worst of the three for any decision that matters. Heat index is what triggers heat-priority days under the OSHA Heat NEP — not because it's the most physiologically complete metric, but because it's the most widely reported one. WBGT is what supports specific work/rest orders on specific jobsites — and a citation defense without WBGT measurements is structurally weaker than one with.</p>
+
+        <p>The table below is the NIOSH 2016-106 §6 recommended work/rest schedule for an acclimatized worker. It's read by crossing WBGT (left column) with work intensity (top row); the cell value is the maximum minutes of work per hour at that combination. Above 32.2 °C WBGT, NIOSH recommends stopping work entirely.</p>
+
+        <figure class="chapter-figure">
+          <img src="/data/diagrams/work-rest-table.svg" alt="NIOSH work-rest table: WBGT bands from under 25 °C to over 32.2 °C crossed with work intensity (light, moderate, heavy, very heavy) giving recommended minutes of work per hour; the ceiling row is shaded in dark oxblood indicating stop-work" />
+          <figcaption>NIOSH 2016-106 §6 work-rest table. Acclimatized worker, REL line.</figcaption>
+        </figure>
+
+        <p>How this plays in practice. An OSHA inspector arriving at a jobsite with a calibrated WBGT meter and a documented work-intensity classification can write a citation that references this table directly. The same inspector with only an air thermometer cannot — there is no NIOSH or ACGIH work/rest table keyed to air temperature. Heat index is the trigger for a heat-priority day, but it is not the tool for specific work/rest orders; that is WBGT's job. <cite data-source="niosh-2016-106">NIOSH 2016-106 §6</cite> The federal NPRM, when finalized, will likely require employers to use Heat Index for the initial trigger and to maintain WBGT-equivalent measurement capability for the high-heat trigger. <cite data-source="fed-nprm-2024">Federal NPRM 2024</cite></p>
+
+        <p>For unacclimatized workers — new hires, returning workers after a 7+ day absence — these thresholds shift downward by 2.5–3 °C WBGT. The ACGIH TLV documentation has the adjustment tables; NIOSH §5 has the canonical acclimatization protocols. The first 14 days of new heat exposure carry the highest risk; NIOSH recommends a staged ramp where workers build from 20% of expected heat load to 100% over five days. Most heat fatalities in published OSHA case files occurred within the first three days on the job — before any physiological adaptation can take hold. <cite data-source="acgih-tlv">ACGIH 2025 TLV</cite></p>
+
+        <aside class="side-dispatch">
+          This is where I work on this. <a href="https://github.com/HeatCompass/heatcompass">HeatCompass</a> is a B2B tool that does WBGT computation, exposure tracking, and the citation-trail documentation for the work/rest decisions described above.
+        </aside>
+
+        <p>The lab ends here. The next stop, if you want to follow how this site was built and what trade-offs ran through it, is the colophon below.</p>
       </div>
     </section>
 

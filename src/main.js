@@ -22,6 +22,7 @@ import { initDivergenceMap } from "./components/divergence-map.js";
 import { initBlindSpotCards } from "./components/blind-spot-cards.js";
 import { initSandboxCalculator } from "./components/sandbox-calculator.js";
 import { initLiveNwsPanel } from "./components/live-nws-panel.js";
+import { initWorkRestTable } from "./components/work-rest-table.js";
 
 function boot() {
   initTempToggle();
@@ -34,6 +35,7 @@ function boot() {
   initBlindSpotCards();
   initSandboxCalculator();
   initLiveNwsPanel();
+  initWorkRestTable();
   initCh7ModeToggle();
   // Visible boot marker for sanity-check in DevTools
   console.info("heat-metrics-lab — phase 5 booted");
