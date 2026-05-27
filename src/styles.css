@@ -1,36 +1,218 @@
+/* src/styles.css — heat-metrics-lab brand + chapter layout + reduced-motion gate.
+ * Tokens kept in sync with DESIGN.md. If you edit tokens here, update DESIGN.md too. */
+
 :root {
+  /* Surface */
   --paper: #F5EFDF;
+  --paper-edge: #E9E0C8;
+  --surface-card: #FBF6E8;
+
+  /* Ink */
   --ink: #1B1B1B;
   --ink-soft: #3D3A33;
+  --ink-faint: #8A8275;
+  --rule: #221A15;
+
+  /* Metric inks (the load-bearing semantic colors) */
   --air: #3F5160;
   --heat-index: #A45A2A;
   --wbgt: #702424;
-  --font-display: "GT Sectra Display", "Spectral", serif;
+
+  /* Link tokens */
+  --accent-link: var(--wbgt);
+  --accent-link-hover: #A45A2A;
+
+  /* Type stacks (all self-hosted; no Google Fonts) */
+  --font-display: "GT Sectra Display", "Spectral", "Charter", "Georgia", serif;
   --font-body: "Spectral", "Charter", "Georgia", serif;
-  --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
-  --font-ui: "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, "Menlo", monospace;
+  --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Type scale (rem; base 16 px) */
+  --fs-hero:     clamp(2.75rem, 8vw, 5.5rem);
+  --fs-h2:       clamp(1.75rem, 4vw, 2.5rem);
+  --fs-body:     clamp(1.0625rem, 1.2vw, 1.1875rem);
+  --fs-caption:  0.875rem;
+  --fs-marginalia: 0.8125rem;
+
+  /* Spacing (8-pt baseline) */
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --space-12: 96px;
+  --space-16: 128px;
+
+  /* Layout */
+  --strip-h-mobile: 56px;
+  --strip-h-desktop: 48px;
+  --max-content: 64ch;
 }
 
-html, body {
-  margin: 0;
+/* Reset / base */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  /* Account for the persistent strip at top */
+  padding-top: var(--strip-h-mobile);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+@media (min-width: 768px) {
+  body { padding-top: var(--strip-h-desktop); }
 }
 
+a { color: var(--accent-link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+a:hover, a:focus-visible { color: var(--accent-link-hover); }
+
+p { margin: 0 0 var(--space-3) 0; max-width: var(--max-content); }
+h1, h2, h3 { font-family: var(--font-display); margin: 0 0 var(--space-3) 0; }
+.chapter__title { font-size: var(--fs-h2); }
+.chapter__title--hero { font-size: var(--fs-hero); line-height: 1.05; }
+
+/* Chapter layout */
+main { display: flex; flex-direction: column; }
 .chapter {
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding: 24px;
+  padding: var(--space-12) var(--space-3);
+  transition: opacity 0.4s ease;
+  opacity: 0.55;
+}
+.chapter.is-active { opacity: 1.0; }
+.chapter__inner {
+  width: 100%;
+  max-width: 80ch;
+  margin: 0 auto;
+}
+.chapter__inner--hero { max-width: 100%; text-align: center; }
+
+/* Hero numbers (Ch 0) */
+.hero-numbers {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  margin: var(--space-6) 0;
+}
+@media (min-width: 768px) { .hero-numbers { grid-template-columns: repeat(3, 1fr); } }
+.hero-numbers__cell { display: flex; flex-direction: column; align-items: center; }
+.hero-numbers__cell--air   { color: var(--air); }
+.hero-numbers__cell--hi    { color: var(--heat-index); }
+.hero-numbers__cell--wbgt  { color: var(--wbgt); }
+.hero-numbers__value { font-family: var(--font-mono); font-size: clamp(3rem, 10vw, 6rem); line-height: 1; font-weight: 500; }
+.hero-numbers__unit  { font-family: var(--font-mono); font-size: 0.4em; opacity: 0.7; }
+.hero-numbers__label { font-family: var(--font-ui); font-size: var(--fs-caption); margin-top: var(--space-2); color: var(--ink-soft); text-align: center; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
+  .chapter { opacity: 1.0; transition: none; }
 }
 
-.chapter h1 {
-  font-family: var(--font-display);
-  font-size: clamp(2.5rem, 8vw, 5rem);
-  margin: 0;
-}
+/* ---- Three-number strip (persistent top-of-viewport) ---- */
 
-a {
-  color: var(--wbgt);
+.strip {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--strip-h-mobile);
+  background: var(--paper);
+  border-bottom: 1px solid var(--paper-edge);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  z-index: 100;
+}
+@media (min-width: 768px) { .strip { height: var(--strip-h-desktop); } }
+
+.strip__cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-right: 1px solid var(--paper-edge);
+  font-family: var(--font-ui);
+  padding: 0 var(--space-3);
+}
+.strip__cell:last-child { border-right: none; }
+.strip__label {
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.strip__value {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--ink-faint);
+  transition: color 0.4s ease;
+}
+@media (min-width: 768px) { .strip__value { font-size: 1.5rem; } }
+
+/* Active-metric highlighting — the chapter's data-metric tells which cell is "live" */
+.strip__cell--air   .strip__value { color: var(--ink-faint); }
+.strip__cell--hi    .strip__value { color: var(--ink-faint); }
+.strip__cell--wbgt  .strip__value { color: var(--ink-faint); }
+
+.strip[data-active-metric="air"]  .strip__cell--air  .strip__value { color: var(--air); font-weight: 600; }
+.strip[data-active-metric="heat-index"] .strip__cell--hi .strip__value { color: var(--heat-index); font-weight: 600; }
+.strip[data-active-metric="wbgt"] .strip__cell--wbgt .strip__value { color: var(--wbgt); font-weight: 600; }
+.strip[data-active-metric="all"]  .strip__value { color: var(--ink); }
+
+/* ---- Unit toggle (persistent footer button) ---- */
+
+.site-footer {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 99;
+}
+.unit-toggle {
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  background: var(--surface-card);
+  color: var(--ink);
+  border: 1px solid var(--paper-edge);
+  border-radius: 6px;
+  padding: 10px 14px;
+  min-width: 44px;
+  min-height: 44px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: background-color 0.2s ease;
+}
+.unit-toggle:hover { background: var(--paper); }
+.unit-toggle:focus-visible { outline: 2px solid var(--wbgt); outline-offset: 2px; }
+.unit-toggle[aria-pressed="true"] { background: var(--ink-faint); color: var(--paper); }
+.unit-toggle__alt { font-family: var(--font-mono); font-weight: 600; }
+
+/* ---- Side dispatch (for Phase 3+) ---- */
+
+.side-dispatch {
+  background: var(--surface-card);
+  border-left: 3px solid var(--ink-soft);
+  padding: var(--space-3);
+  margin: var(--space-4) 0;
+  font-size: 0.9375rem;
+}
+.side-dispatch::before {
+  content: "For practitioners.";
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  display: block;
+  margin-bottom: var(--space-2);
 }

@@ -14,14 +14,124 @@
   <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
+
+  <!-- Persistent three-number strip (top of viewport) -->
+  <header class="strip" role="banner" aria-label="Three-metric strip">
+    <div class="strip__cell strip__cell--air"><span class="strip__label">Air</span><span class="strip__value" data-strip="air_temp_c">—</span></div>
+    <div class="strip__cell strip__cell--hi"><span class="strip__label">Heat Index</span><span class="strip__value" data-strip="hi_c">—</span></div>
+    <div class="strip__cell strip__cell--wbgt"><span class="strip__label">WBGT</span><span class="strip__value" data-strip="wbgt_c">—</span></div>
+  </header>
+
   <main>
-    <section class="chapter chapter--hero" data-chapter="0">
-      <div class="chapter__inner">
-        <h1>heat-metrics-lab</h1>
-        <p>Under construction — see <a href="/docs/superpowers/specs/2026-05-27-heat-metrics-lab-design.md">design spec</a>.</p>
+
+    <!-- Ch 0 — Hero. All three numbers from the canonical opening. -->
+    <section class="chapter chapter--hero" data-chapter="0" data-act="hero" data-metric="all"
+             data-readings='{"air_temp_c":35,"hi_c":40.6,"wbgt_c":27.8}'>
+      <div class="chapter__inner chapter__inner--hero">
+        <h1 class="chapter__title chapter__title--hero">The three numbers</h1>
+        <div class="hero-numbers">
+          <div class="hero-numbers__cell hero-numbers__cell--air">
+            <span class="hero-numbers__value temp" data-c="35">35</span><span class="hero-numbers__unit"> °C</span>
+            <span class="hero-numbers__label">what your thermometer says</span>
+          </div>
+          <div class="hero-numbers__cell hero-numbers__cell--hi">
+            <span class="hero-numbers__value temp" data-c="40.6">40.6</span><span class="hero-numbers__unit"> °C</span>
+            <span class="hero-numbers__label">what it feels like</span>
+          </div>
+          <div class="hero-numbers__cell hero-numbers__cell--wbgt">
+            <span class="hero-numbers__value temp" data-c="27.8">27.8</span><span class="hero-numbers__unit"> °C</span>
+            <span class="hero-numbers__label">what your body has to do</span>
+          </div>
+        </div>
+        <p class="hero-tag">Three metrics. One heat day. Three different decisions.</p>
+        <aside class="hero-disclaimer">
+          <p>This is a lab, not a clinical tool. The formulas here approximate published research but aren't a substitute for an inspector's reading at your jobsite, and they aren't medical advice. If you are experiencing heat illness, call a doctor.</p>
+          <p>Every claim links to its source.</p>
+        </aside>
       </div>
     </section>
+
+    <!-- Ch 1 — Air temperature. Only air_temp_c live; HI / WBGT dashed. -->
+    <section class="chapter" data-chapter="1" data-act="anatomy" data-metric="air"
+             data-readings='{"air_temp_c":35,"hi_c":null,"wbgt_c":null}'>
+      <div class="chapter__inner">
+        <h2 class="chapter__title">What the wall thermometer tells you</h2>
+        <p class="chapter__placeholder">Body lands in Phase 3.</p>
+      </div>
+    </section>
+
+    <!-- Ch 2 — Heat index. Air + HI live; WBGT dashed. -->
+    <section class="chapter" data-chapter="2" data-act="anatomy" data-metric="heat-index"
+             data-readings='{"air_temp_c":35,"hi_c":40.6,"wbgt_c":null}'>
+      <div class="chapter__inner">
+        <h2 class="chapter__title">What it feels like</h2>
+        <p class="chapter__placeholder">Body lands in Phase 3.</p>
+      </div>
+    </section>
+
+    <!-- Ch 3 — WBGT. All three live. -->
+    <section class="chapter" data-chapter="3" data-act="anatomy" data-metric="wbgt"
+             data-readings='{"air_temp_c":35,"hi_c":40.6,"wbgt_c":27.8}'>
+      <div class="chapter__inner">
+        <h2 class="chapter__title">What it does to a working body</h2>
+        <p class="chapter__placeholder">Body lands in Phase 3.</p>
+      </div>
+    </section>
+
+    <!-- Ch 4 — Scenario flipper. All three live; default = Phoenix Aug 12pm.
+         Real values come from data/scenarios/phoenix-aug-12pm.json: T=42.2°C, HI=41.83°C, WBGT_out=30.88°C -->
+    <section class="chapter chapter--centerpiece" data-chapter="4" data-act="divergence" data-metric="all"
+             data-readings='{"air_temp_c":42.2,"hi_c":41.83,"wbgt_c":30.88}'>
+      <div class="chapter__inner">
+        <h2 class="chapter__title">Same day, three numbers</h2>
+        <p class="chapter__placeholder">Scenario flipper lands in Phase 4.</p>
+      </div>
+    </section>
+
+    <!-- Ch 5 — Divergence map. All three live. -->
+    <section class="chapter" data-chapter="5" data-act="divergence" data-metric="all"
+             data-readings='{"air_temp_c":42.2,"hi_c":41.83,"wbgt_c":30.88}'>
+      <div class="chapter__inner">
+        <h2 class="chapter__title">The divergence map</h2>
+        <p class="chapter__placeholder">2D divergence plot lands in Phase 4.</p>
+      </div>
+    </section>
+
+    <!-- Ch 6 — Blind spots. All three live. -->
+    <section class="chapter" data-chapter="6" data-act="divergence" data-metric="all"
+             data-readings='{"air_temp_c":42.2,"hi_c":41.83,"wbgt_c":30.88}'>
+      <div class="chapter__inner">
+        <h2 class="chapter__title">Where each metric fails</h2>
+        <p class="chapter__placeholder">Three blind-spot cards land in Phase 4.</p>
+      </div>
+    </section>
+
+    <!-- Ch 7 — Try it (sandbox + live NWS). All three live. -->
+    <section class="chapter chapter--centerpiece" data-chapter="7" data-act="application" data-metric="all"
+             data-readings='{"air_temp_c":42.2,"hi_c":41.83,"wbgt_c":30.88}'>
+      <div class="chapter__inner">
+        <h2 class="chapter__title">Try it</h2>
+        <p class="chapter__placeholder">Sandbox calculator + live api.weather.gov panel land in Phase 5.</p>
+      </div>
+    </section>
+
+    <!-- Ch 8 — Practitioner. All three live. -->
+    <section class="chapter" data-chapter="8" data-act="application" data-metric="all"
+             data-readings='{"air_temp_c":42.2,"hi_c":41.83,"wbgt_c":30.88}'>
+      <div class="chapter__inner">
+        <h2 class="chapter__title">How professionals use these</h2>
+        <p class="chapter__placeholder">Practitioner body + work/rest table land in Phase 5.</p>
+      </div>
+    </section>
+
   </main>
+
+  <footer class="site-footer">
+    <button type="button" class="unit-toggle" id="unit-toggle" aria-pressed="false">
+      Show as <span class="unit-toggle__alt">°F</span>
+    </button>
+  </footer>
+
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>
