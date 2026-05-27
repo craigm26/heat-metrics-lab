@@ -274,3 +274,50 @@ cite.citation-chip:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   cite.citation-chip { transition: none; }
 }
+
+/* ---- Chapter figures (embedded SVG diagrams in body prose) ---- */
+
+.chapter-figure {
+  margin: var(--space-6) 0;
+  text-align: center;
+}
+.chapter-figure img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  background: var(--paper);
+}
+.chapter-figure figcaption {
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  color: var(--ink-soft);
+  margin-top: var(--space-2);
+  max-width: 64ch;
+  margin-left: auto;
+  margin-right: auto;
+  font-style: italic;
+}
+
+/* Hero tag (Ch 0) */
+.hero-tag {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.5vw, 1.625rem);
+  color: var(--ink-soft);
+  margin: var(--space-4) 0 var(--space-6) 0;
+  font-style: italic;
+}
+
+/* Hero disclaimer (Ch 0) */
+.hero-disclaimer {
+  max-width: 60ch;
+  margin: var(--space-4) auto 0 auto;
+  padding: var(--space-3);
+  background: var(--surface-card);
+  border: 1px solid var(--paper-edge);
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+  text-align: left;
+}
+.hero-disclaimer p { margin: 0 0 var(--space-2) 0; }
+.hero-disclaimer p:last-child { margin-bottom: 0; }

@@ -56,7 +56,28 @@
              data-readings='{"air_temp_c":35,"hi_c":null,"wbgt_c":null}'>
       <div class="chapter__inner">
         <h2 class="chapter__title">What the wall thermometer tells you</h2>
-        <p class="chapter__placeholder">Body lands in Phase 3.</p>
+
+        <p>A thermometer reports one thing: the temperature of the air immediately surrounding the sensor. One number, one sensor, one point in space. The reading is only as good as where the instrument sits.</p>
+
+        <p>That siting question was settled in 1864. <cite data-source="stevenson">Stevenson 1864</cite> described a louvered wooden enclosure — the Stevenson screen — that became the global reference instrument. The rules: 1.2 m to 2.0 m above ground, freely ventilated but shielded from direct sun, away from paved surfaces that radiate heat, away from HVAC exhausts. The <cite data-source="wmo-cimo">WMO-No. 8</cite> CIMO Guide codifies this as the international standard a century and a half later. Every official air-temperature reading you've ever seen came from an instrument following those rules — or should have.</p>
+
+        <p>Two thermometers 50 m apart can disagree by 10 °C and both be correct. Asphalt radiates stored heat into the air column above it; grass stays cooler through evapotranspiration. Still air in a sunlit courtyard is 5–8 °C warmer than air in a shaded breezeway twenty meters away. Rooftop instruments read differently from ground-level ones. "Air temperature" is always a local measurement, not a property of the sky.</p>
+
+        <p>The figure below shows what the Stevenson screen shields the thermometer from. Inside the louvered box, the sensor sees only dry-bulb air temperature. It does not see relative humidity. It does not see how hard the sun is working on a body standing next to it. It does not see the wind carrying heat away from exposed skin. It does not see whether the person reading it has been working for four hours or four minutes.</p>
+
+        <figure class="chapter-figure">
+          <img src="/data/diagrams/stevenson-screen.svg" alt="Stevenson weather screen with arrows pointing to humidity, sun, wind, and exertion as factors not measured by the thermometer inside" />
+          <figcaption>The Stevenson screen, 1864 standard. A thermometer here reports air temperature — and nothing else.</figcaption>
+        </figure>
+
+        <p>A wall thermometer in direct sun, mounted on a south-facing brick wall, above a parking lot, next to a dryer vent, will read 15 °C high. A screen-mounted station instrument two blocks away will read correctly. Both numbers appear in the same "current conditions" dashboard.</p>
+
+        <p>To start accounting for humidity, the next chapter introduces the heat index.</p>
+
+        <aside class="side-dispatch">
+          OSHA does not specify raw air-temperature thresholds in the proposed Heat Rule — Heat Index ≥80 °F is the trigger for the "initial heat trigger" provisions, not raw air temperature. <cite data-source="osha-nep">OSHA CPL 03-00-024-0, Heat NEP renewed 2026-04-10</cite>
+        </aside>
+
       </div>
     </section>
 
@@ -65,7 +86,28 @@
              data-readings='{"air_temp_c":35,"hi_c":40.6,"wbgt_c":null}'>
       <div class="chapter__inner">
         <h2 class="chapter__title">What it feels like</h2>
-        <p class="chapter__placeholder">Body lands in Phase 3.</p>
+
+        <p>The body cools by sweating. Sweat evaporates and carries heat away — but only if the surrounding air is dry enough to absorb vapor. Humid air is already nearly saturated. The evaporative gradient collapses. Sweat stays on the skin. The body's primary cooling pathway narrows. Apparent temperature — the perceived thermal load — rises.</p>
+
+        <p><cite data-source="steadman-1979">Steadman 1979</cite> built the first systematic model of this effect: a lookup table combining dry-bulb temperature and dewpoint, calibrated against a clothed human body walking at a moderate pace. The table was rigorous but not broadcast-ready. In 1990, <cite data-source="rothfusz-1990">NWS SR-90</cite> — Lans P. Rothfusz at NWS Fort Worth — fit a polynomial regression to Steadman's table. That regression is what every NWS heat index forecast has run since, and it's what this page implements.</p>
+
+        <p>The polynomial does something the raw table obscures: it makes the humidity gradient visible as a single number. At 35 °C air temperature and 30% relative humidity, the heat index is roughly 34 °C — barely above the thermometer reading. At 35 °C and 75% RH, the heat index reaches 41 °C. Same air temperature. Seven degrees of felt difference, driven entirely by moisture in the air.</p>
+
+        <p>The nomogram below makes this gradient visible. The horizontal axis is air temperature; the vertical axis is relative humidity. The umber contour lines are heat-index isopleths — the same "feels like" temperature traces diagonally across a wide range of T/RH combinations. Two annotated points sit at 35 °C air temperature: one dry day (30% RH) and one humid day (75% RH). The gap between them is not a rounding artifact. It's the difference between heat illness risk levels.</p>
+
+        <figure class="chapter-figure">
+          <img src="/data/diagrams/heat-index-nomogram.svg" alt="NWS heat-index nomogram showing how the heat index varies with air temperature and relative humidity, with two annotated example points at 35 °C and 30% RH versus 35 °C and 75% RH" />
+          <figcaption>The same air temperature, two different "feels like" readings. The umber contours are NWS heat index isopleths. The two anchored points are the same wall thermometer reading on two different days.</figcaption>
+        </figure>
+
+        <p>What the heat index does not see: solar radiation. A worker standing in direct midday sun absorbs 700–900 W/m² of radiant load above and beyond the air temperature. Wind speed. Convective cooling from air movement over exposed skin is substantial — a 10 km/h breeze at 35 °C provides meaningful cooling that the Rothfusz polynomial never accounts for. Work intensity. A body generating metabolic heat from carrying loads adds internal heat production that no weather measurement captures. Clothing. PPE — hard hats, Tyvek suits, gloves — traps heat between the body and the air no matter what the thermometer says.</p>
+
+        <p>To account for sun, wind, and the actual workload on a body, the next chapter introduces WBGT.</p>
+
+        <aside class="side-dispatch">
+          OSHA Heat NEP triggers a "heat priority day" at NWS HI ≥80 °F. The Federal NPRM (comments closed 2025-10-30, still pending as of 2026-05-27) keys the "initial heat trigger" to HI 80 °F and the "high heat trigger" to HI 90 °F. <cite data-source="osha-nep">CPL 03-00-024-0</cite> <cite data-source="fed-nprm-2024">Federal Register NPRM</cite>
+        </aside>
+
       </div>
     </section>
 
@@ -74,7 +116,30 @@
              data-readings='{"air_temp_c":35,"hi_c":40.6,"wbgt_c":27.8}'>
       <div class="chapter__inner">
         <h2 class="chapter__title">What it does to a working body</h2>
-        <p class="chapter__placeholder">Body lands in Phase 3.</p>
+
+        <p>Wet-bulb globe temperature is not a weather metric. It's an occupational one. WBGT was designed to answer a specific question: given this environment — the air, the sun, the wind — how fast is the heat load on a working body accumulating? Air temperature and heat index don't answer that question. WBGT does.</p>
+
+        <p>The origin is precise. In the 1950s, recruits at Parris Island, SC were dying during summer training. <cite data-source="yaglou-minard-1957">Yaglou &amp; Minard 1957</cite> — a CSM-CDC collaboration — instrumented the training grounds and found that a three-thermometer weighted average predicted heat casualties better than any single measurement. That weighted average is WBGT. Every occupational heat standard since — NIOSH, ACGIH, ISO, OSHA — traces directly to that Parris Island work.</p>
+
+        <p>The three thermometers work as follows. The dry-bulb thermometer (Td) is ordinary air temperature — the same reading as the Stevenson screen. The natural wet-bulb thermometer (Tnwb) is a standard thermometer with a water-soaked wick wrapped around the bulb, exposed to natural airflow — not artificially ventilated. Evaporation from the wick cools the reading; how much it cools depends on the combined effect of humidity, wind, and radiant load. The black-globe thermometer (Tg) is a matte-black 150 mm hollow copper sphere with a thermometer at its center. It absorbs solar and reflected radiation, rises above air temperature in proportion to the radiant load, and falls back toward air temperature in wind. The outdoor WBGT formula combines all three: WBGT = 0.7·Tnwb + 0.2·Tg + 0.1·Td.</p>
+
+        <figure class="chapter-figure">
+          <img src="/data/diagrams/three-thermometer-rig.svg" alt="Three vertical thermometers side by side — dry-bulb, natural wet-bulb with a water droplet glyph, and black-globe — with the outdoor WBGT formula 0.7 Tnwb + 0.2 Tg + 0.1 Td annotated below" />
+          <figcaption>The WBGT rig. Three thermometers, one weighted average. The wet bulb dominates because evaporation is how a working body sheds heat.</figcaption>
+        </figure>
+
+        <p>The 0.7 weight on the wet bulb is not arbitrary. It reflects the dominance of evaporative cooling in human thermoregulation. When a body is working hard in heat, sweat evaporation accounts for the majority of heat dissipation — more than convection, more than radiation. The wet bulb is the best single sensor for whether evaporative cooling is available. The 0.2 on the globe and 0.1 on the dry bulb account for radiant and convective load respectively.</p>
+
+        <p>What WBGT still doesn't see: clothing and PPE. A Tyvek suit insulates and blocks evaporation; NIOSH 2016-106 §6 provides WBGT correction factors by garment type that add up to 10 °C equivalent load. Acclimatization. A heat-adapted worker can sustain labor at WBGT values 5–7 °C higher than a first-week new hire — <cite data-source="niosh-2016-106">NIOSH 2016-106 §6</cite> and <cite data-source="acgih-tlv">ACGIH 2025 TLV</cite> both carry separate columns for acclimatized vs. unacclimatized workers. Individual fitness and health. Work rate. The NIOSH and ACGIH tables are keyed to four work-intensity levels: light, moderate, heavy, very heavy — the metabolic heat generation per hour is as important as the environment.</p>
+
+        <p>Measurement protocol matters. <cite data-source="iso-7243">ISO 7243</cite> specifies sphere diameter, wick material, ventilation conditions, and calibration procedure. A WBGT reading made outside ISO 7243 protocol isn't a defensible occupational measurement — it's an approximation. This page computes approximations. An inspector's reading at your jobsite, made with calibrated instruments under ISO 7243 protocol, is the defensible one.</p>
+
+        <p>With three numbers in hand, the next chapter compares them on the same days.</p>
+
+        <aside class="side-dispatch">
+          ACGIH TLVs use WBGT crossed with work intensity to define recommended work/rest ratios. NIOSH 2016-106 §6 has the canonical adjusted tables; the OSHA-NIOSH Heat App embeds them. <cite data-source="niosh-2016-106">NIOSH 2016-106 §6</cite> <cite data-source="acgih-tlv">ACGIH 2025 TLV</cite>
+        </aside>
+
       </div>
     </section>
 
