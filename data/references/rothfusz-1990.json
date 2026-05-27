@@ -1,0 +1,8 @@
+{
+  "id": "rothfusz-1990",
+  "title": "The Heat Index Equation (or, More Than You Ever Wanted to Know About Heat Index)",
+  "citation": "Rothfusz, L.P. (1990). NWS Technical Attachment, SR-90-23, Fort Worth, TX.",
+  "url": "https://www.weather.gov/media/ffc/ta_htindx.PDF",
+  "accessed_at": "2026-05-27",
+  "note": "Polynomial regression on Steadman 1979's apparent-temperature tables. Operational basis for the NWS Heat Index used by all US weather forecasts."
+}
