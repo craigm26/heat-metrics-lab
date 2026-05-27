@@ -822,3 +822,57 @@ cite.citation-chip:focus-visible {
   .live-nws__preset,
   .live-nws__submit { transition: none; }
 }
+
+/* ---- Colophon (closing footer at end of <main>) ---- */
+
+.colophon {
+  background: var(--paper);
+  border-top: 1px solid var(--paper-edge);
+  padding: var(--space-12) var(--space-3) var(--space-16) var(--space-3);
+  font-family: var(--font-body);
+  color: var(--ink-soft);
+}
+.colophon__inner {
+  max-width: 80ch;
+  margin: 0 auto;
+}
+.colophon__heading {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  color: var(--ink);
+  margin: 0 0 var(--space-4) 0;
+}
+.colophon__subheading {
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  margin: var(--space-6) 0 var(--space-3) 0;
+}
+.colophon__disclaimer {
+  background: var(--surface-card);
+  border-left: 3px solid var(--wbgt);
+  padding: var(--space-3);
+  margin: 0 0 var(--space-4) 0;
+}
+.colophon__disclaimer p { margin: 0; font-size: 0.9375rem; }
+.colophon__col { margin-bottom: var(--space-4); }
+.colophon__refs {
+  margin: 0;
+  padding-left: var(--space-3);
+  font-size: 0.9375rem;
+}
+.colophon__refs li { margin-bottom: 6px; }
+.colophon__refs a {
+  color: var(--accent-link);
+  text-decoration-thickness: 1px;
+}
+.colophon__manifest code {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  background: var(--surface-card);
+  padding: 1px 4px;
+  border-radius: 3px;
+  color: var(--ink);
+}

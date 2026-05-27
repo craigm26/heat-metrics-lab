@@ -139,7 +139,24 @@ Three implementer dispatches (Sonnet) + one significant iteration on the diverge
 
 ### Phase 5 observations
 
-_To come._
+Two implementer dispatches + inline closing-footer write. All 9 chapters now populated; zero placeholders remain in `index.html`.
+
+**Dispatch L (Ch 7 sandbox + live NWS, ~78k tokens)** — applied `playground` skill's single-state-object + preset-chips pattern across both modes. Sandbox: four range sliders (air temp, RH, wind, solar) → three live-computed metrics via the same `src/metrics.js` that drives the drift gate. Live NWS: lat/lng input + two preset coordinate buttons (Phoenix, Houston) → two-stage `api.weather.gov` fetch (`/points/{lat},{lng}` → `forecastHourly`) → renders current-hour readout + 6-hour mini-chart as inline SVG with three lines (air/HI/WBGT) + endpoint markers. Solar estimated client-side from cloud cover + solar elevation (simplified NOAA formula). The CSP already allowed `api.weather.gov` in `connect-src` from Phase 0, so no infrastructure change needed — the live mode just works.
+
+**ZIP-input pivot to lat/lng:** the original spec called for ZIP code geocoding via Open-Meteo. The implementer correctly noted that adding a geocoder host to the CSP allowlist contradicts the "no third-party services" hard constraint. They pivoted to direct lat/lng input + two preset coordinate buttons (which cover the most likely demo cases — Phoenix and Houston). Cleaner; honest about the v1 simplification.
+
+**Dispatch M (Ch 8 practitioner chapter + work-rest table, ~67k tokens)** — `tufte-viz` applied to the NIOSH work-rest table render. Multifunctioning-elements principle: row tints (cream → amber → oxblood) carry severity encoding so no separate legend needed. The bottom row in WBGT oxblood ("stop work — exceeds NIOSH ceiling") is the chapter's load-bearing visual moment. Body prose (438 words) walks the reader through how OSHA inspectors actually use these tables. HeatCompass mention kept appropriately neutral — single paragraph, no waitlist link, no pitch language.
+
+**Closing footer (inline)** — colophon section after Ch 8 with: "lab, not advice" reiteration (oxblood left border for emphasis), full source list of all 10 cited references with direct URLs, sibling-project A/B context (heat-protein-lab comparison), source repo link, MIT license note, data manifest enumerating the scenarios + grids + diagrams + references + drift-gate cases.
+
+**Phase 5 smoke test passed inline**:
+- 13/13 JS modules syntax-check
+- 0 placeholders remaining (all 9 chapters complete)
+- Drift gate still PASS (Phase 1 contract intact)
+- 8/8 critical assets serve 200 OK locally
+- Final HTML: 36.8 KB, ~3,965 body words
+
+**Tufte-viz consistent contribution across Phases 3-5:** the skill earned its install. Across 4 diagram critiques (Stevenson screen, HI nomogram, three-thermometer rig, NIOSH work-rest table) and 2 interactive critiques (divergence map, scenario flipper), the structured eraser/collision/7-test reviews caught a real bug (the divergence-map normalization in Phase 4) and produced specific principle applications in every other case. Strong devrel data point for the comparison post.
 
 ### Phase 6 observations
 

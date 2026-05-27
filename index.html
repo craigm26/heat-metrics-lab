@@ -277,6 +277,57 @@
       </div>
     </section>
 
+    <!-- Colophon — references, disclaimers, source manifest -->
+    <section class="colophon" id="colophon" aria-labelledby="colophon-heading">
+      <div class="colophon__inner">
+        <h2 class="colophon__heading" id="colophon-heading">Colophon</h2>
+
+        <div class="colophon__disclaimer">
+          <p><strong>This is a lab, not advice.</strong> The formulas here approximate published research within documented tolerances; they are not substitutes for an inspector's calibrated reading at a real jobsite, and they are not medical advice. If you are experiencing heat illness, call a doctor.</p>
+        </div>
+
+        <div class="colophon__col">
+          <h3 class="colophon__subheading">Sources cited in this lab</h3>
+          <ul class="colophon__refs">
+            <li><a href="https://archive.org/details/journalscottish01scotgoog">Stevenson, T. (1864)</a> — origin of the louvered weather-screen siting standard</li>
+            <li><a href="https://library.wmo.int/idurl/4/68695">WMO-No. 8 (CIMO Guide)</a> — global standard for meteorological instrument siting</li>
+            <li><a href="https://journals.ametsoc.org/view/journals/apme/18/7/1520-0450_1979_018_0861_taospi_2_0_co_2.xml">Steadman, R. G. (1979)</a> — apparent-temperature model, foundation of NWS Heat Index</li>
+            <li><a href="https://www.weather.gov/media/ffc/ta_htindx.PDF">Rothfusz, L. P. (1990) NWS Tech Memo SR-90</a> — operational Heat Index polynomial</li>
+            <li><a href="https://pubmed.ncbi.nlm.nih.gov/13457450/">Yaglou &amp; Minard (1957)</a> — Parris Island study, origin of WBGT</li>
+            <li><a href="https://www.cdc.gov/niosh/docs/2016-106/">NIOSH 2016-106 §6</a> — work/rest tables for occupational heat exposure</li>
+            <li><a href="https://www.acgih.org/science/tlv-bei-guidelines/">ACGIH TLV (2025)</a> — Heat Stress and Heat Strain threshold limit values</li>
+            <li><a href="https://www.iso.org/standard/67188.html">ISO 7243:2017</a> — international standard for WBGT measurement</li>
+            <li><a href="https://www.osha.gov/enforcement/directives/cpl-03-00-024-0">OSHA CPL 03-00-024-0</a> — Heat National Emphasis Program, renewed 2026-04-10</li>
+            <li><a href="https://www.federalregister.gov/documents/2024/08/30/2024-14824/heat-injury-and-illness-prevention-in-outdoor-and-indoor-work-settings">Federal NPRM 2024 (89 FR 70698)</a> — pending federal heat rule</li>
+          </ul>
+        </div>
+
+        <div class="colophon__col">
+          <h3 class="colophon__subheading">How this site was built</h3>
+          <p>
+            heat-metrics-lab is the Anthropic-tooling counterweight to its sibling
+            <a href="https://github.com/craigm26/heat-protein-lab">heat-protein-lab</a>
+            (which was built in Antigravity 2.0 with Google's Stitch + Science Skills).
+            This site was built entirely in Claude Code with the Anthropic skill/MCP ecosystem.
+            The full A/B comparison post lives on
+            <a href="https://craigmerry.com/">craigmerry.com</a> (forthcoming).
+            Source on <a href="https://github.com/craigm26/heat-metrics-lab">GitHub</a>;
+            MIT licensed; no analytics, no accounts, no third-party scripts at page load.
+          </p>
+          <p class="colophon__manifest">
+            <strong>Data manifest.</strong>
+            5 scenarios at <code>/data/scenarios/</code>,
+            outdoor + indoor divergence grids at <code>/data/divergence/</code>,
+            4 diagrams at <code>/data/diagrams/</code>,
+            10 citation references at <code>/data/references/</code>,
+            12 drift-gate reference cases at <code>/data/references/reference-cases.json</code>.
+            All generated at build time by Python scripts under <code>/scripts/</code>;
+            JS-vs-Python formulas validated at 0.5 °F drift gate in CI.
+          </p>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="site-footer">
