@@ -1,7 +1,7 @@
 // src/components/divergence-map.js
 // Ch 5 divergence map. Paints each (air_temp, RH) cell by which metric
 // would issue the strongest warning at that point. Outdoor vs indoor toggle.
-import { formatTemp } from "./temp-toggle.js";
+import { formatTemp, currentUnit, cToF } from "./temp-toggle.js";
 
 const STORAGE_KEY = "hml-divergence-mode";
 
@@ -128,15 +128,17 @@ function render(root) {
   const axisColor = "var(--ink-faint)";
   const tickColor = "var(--ink-soft)";
 
-  // X-axis ticks every 5 °C: 20, 25, 30, 35, 40, 45
+  // X-axis ticks every 5 °C: 20, 25, 30, 35, 40, 45 (underlying grid is °C; labels follow the C/F toggle)
   const xTickValues = [20, 25, 30, 35, 40, 45];
+  const isF = currentUnit() === "F";
   let xTicksHtml = "";
   for (const tv of xTickValues) {
     const xi = grid.temp_axis.indexOf(tv);
     if (xi < 0) continue;
     const x = pad.left + (xi + 0.5) * cellW;
+    const label = isF ? Math.round(cToF(tv)).toString() : tv.toString();
     xTicksHtml += `<line x1="${x.toFixed(1)}" y1="${(pad.top + plotH).toFixed(1)}" x2="${x.toFixed(1)}" y2="${(pad.top + plotH + 6).toFixed(1)}" stroke="${tickColor}" stroke-width="1"/>`;
-    xTicksHtml += `<text x="${x.toFixed(1)}" y="${(pad.top + plotH + 22).toFixed(1)}" text-anchor="middle" font-size="11" font-family="var(--font-ui)" fill="${tickColor}">${tv}</text>`;
+    xTicksHtml += `<text x="${x.toFixed(1)}" y="${(pad.top + plotH + 22).toFixed(1)}" text-anchor="middle" font-size="11" font-family="var(--font-ui)" fill="${tickColor}">${label}</text>`;
   }
 
   // Y-axis ticks every 20% RH: 20, 40, 60, 80, 100
@@ -154,7 +156,7 @@ function render(root) {
   const xMid = pad.left + plotW / 2;
   const yMid = pad.top + plotH / 2;
   const axisLabels = `
-    <text x="${xMid.toFixed(1)}" y="${(H - 10).toFixed(1)}" text-anchor="middle" font-size="12" font-family="var(--font-ui)" fill="${tickColor}">Air temperature (°C)</text>
+    <text x="${xMid.toFixed(1)}" y="${(H - 10).toFixed(1)}" text-anchor="middle" font-size="12" font-family="var(--font-ui)" fill="${tickColor}">Air temperature (${isF ? "°F" : "°C"})</text>
     <text x="14" y="${yMid.toFixed(1)}" transform="rotate(-90, 14, ${yMid.toFixed(1)})" text-anchor="middle" font-size="12" font-family="var(--font-ui)" fill="${tickColor}">Relative humidity (%)</text>
   `;
 
