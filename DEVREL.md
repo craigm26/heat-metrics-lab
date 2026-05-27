@@ -123,7 +123,19 @@ Two implementer dispatches (both Sonnet) + one manual commit-and-push pass for t
 
 ### Phase 4 observations
 
-_To come._
+Three implementer dispatches (Sonnet) + one significant iteration on the divergence-map normalization.
+
+**Dispatch I (data, ~48k tokens)** — 5 scenario JSONs + outdoor/indoor divergence grids. Hand-curated values rather than NOAA NCEI fetch (no API key, no rate-limit fragility); three of five scenarios are exact matches to the Phase 1 reference-cases.json drift-gated values (phoenix-aug-12pm, warehouse-indoor, lytton-bc-2021), keeping a single source of truth for those cells.
+
+**Dispatch J (Ch 4 scenario flipper, ~62k tokens)** — applied the `playground` skill's single-state-object + preset-chips pattern. The flipper dispatches a `chapter-active`-shaped event on chip click so the persistent three-number-strip stays in sync; lasts selection persists via `localStorage["hml-scenario"]`. 392-word body prose framing the divergence using Phoenix vs warehouse vs Lytton as the dramatic anchors.
+
+**Dispatch K (Ch 5 divergence map + Ch 6 blind-spot cards, ~84k tokens)** — invoked `tufte-viz` for both. **The implementer surfaced a real spec problem during their own critique pass**: under the original threshold-relative normalization, WBGT won only 2/1140 outdoor cells and 0/1140 indoor — HI's much larger ceiling (~60°C vs WBGT's ~35°C) meant HI's threshold-relative breach was always larger. The implementer rewrote the Ch 5 prose to honestly describe what the map showed (HI-dominant everywhere) rather than asserting the spec's intended divergence story. That honesty surfaced the issue rather than burying it. The fix (commit `8c9da92`): renormalize by each metric's dynamic range above threshold (Air 35→50, HI 32.2→54, WBGT 28→35). New distribution: outdoor WBGT 8.9% (a meaningful band), indoor WBGT 0% (which is itself a finding — indoor WBGT mathematically tracks HI when there's no solar load, so "WBGT measurement earns its keep outdoors" becomes the chapter's key claim). Ch 5 prose rewritten again (`63abfb9`) to match the corrected map.
+
+**Operator-side commit (`110888d`)** landed mid-session: dropped the GitHub Actions deploy workflow in favor of local `npx wrangler pages deploy`. Removes the deferred CF Pages secrets blocker; deploys become a deliberate operator action rather than a per-push automatic that was failing silently.
+
+**Real win for the review-driven workflow:** the implementer's tufte-viz self-critique caught a substantive design issue (the normalization that hid the educational point of the entire act) before commit. Without the structured critique pass, the bug would have shipped silently — the map would have rendered something that *looked* right (colored cells) but failed to make its argument. Strong devrel data point for the comparison post.
+
+**Tufte-viz follow-up gap:** the skill's analytical-design reference covers "layering" and "comparison" thoroughly but doesn't address **the calibration of multi-metric encodings** — i.e., when you paint regions by "which metric dominates," the normalization choice itself is a design decision the skill could give guidance on. Phase 6 follow-up candidate: a small extension to the skill (or a complementary skill) about choosing normalization for multi-metric severity maps.
 
 ### Phase 5 observations
 
