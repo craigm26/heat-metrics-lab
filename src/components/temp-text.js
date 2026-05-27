@@ -1,11 +1,31 @@
 // src/components/temp-text.js
 // Auto-wraps inline `°C` literals in body copy so the C/F toggle catches them.
 // Adapted from heat-protein-lab's pattern in src/main.js.
+//
+// Numbers wrapped in an ancestor with `data-c-delta` are treated as temperature
+// DIFFERENCES, not absolute readings — converted by ΔF = ΔC × 9/5, no +32.
+// Use this for phrases like "5–8 °C warmer" or "shift downward by 2.5–3 °C".
 import { currentUnit, cToF } from "./temp-toggle.js";
 
 const TEMP_RE = /(\d+(?:\.\d+)?(?:\s*[→\-–—]\s*\d+(?:\.\d+)?)*)\s*°\s*C(?![a-zA-Z])/g;
 const NO_WALK_TAGS = new Set(["SCRIPT","STYLE","CODE","PRE","NOSCRIPT","TEXTAREA","INPUT"]);
 const NO_WALK_CLASS = "no-temp-convert";
+
+function cDeltaToF(c) { return c * 9 / 5; }
+function isInDelta(node) {
+  let p = node.parentNode;
+  while (p) {
+    if (p.dataset && "cDelta" in p.dataset) return true;
+    p = p.parentNode;
+  }
+  return false;
+}
+function formatC(c, asFahrenheit, isDelta) {
+  const v = asFahrenheit
+    ? (isDelta ? cDeltaToF(c) : cToF(c))
+    : c;
+  return c === Math.floor(c) && v === Math.floor(v) ? v.toFixed(0) : v.toFixed(1);
+}
 
 export function initTempText(root = document.body) {
   walk(root);
@@ -40,6 +60,8 @@ function walk(root) {
 
 function wrap(textNode) {
   const text = textNode.nodeValue;
+  const isDelta = isInDelta(textNode);
+  const asF = currentUnit() === "F";
   TEMP_RE.lastIndex = 0;
   const frag = document.createDocumentFragment();
   let last = 0;
@@ -53,10 +75,9 @@ function wrap(textNode) {
         const span = document.createElement("span");
         span.className = "temp";
         span.setAttribute("data-c", part);
+        if (isDelta) span.setAttribute("data-c-delta", "");
         const c = parseFloat(part);
-        span.textContent = currentUnit() === "F"
-          ? cToF(c).toFixed(c === Math.floor(c) ? 0 : 1)
-          : part;
+        span.textContent = formatC(c, asF, isDelta);
         frag.appendChild(span);
       } else {
         frag.appendChild(document.createTextNode(part));
@@ -71,12 +92,12 @@ function wrap(textNode) {
 
 function rerenderAll(root) {
   const unit = currentUnit();
+  const asF = unit === "F";
   for (const span of root.querySelectorAll("span.temp")) {
     const c = parseFloat(span.getAttribute("data-c"));
     if (Number.isNaN(c)) continue;
-    span.textContent = unit === "F"
-      ? cToF(c).toFixed(c === Math.floor(c) ? 0 : 1)
-      : (c === Math.floor(c) ? c.toFixed(0) : c.toFixed(1));
+    const isDelta = span.hasAttribute("data-c-delta");
+    span.textContent = formatC(c, asF, isDelta);
     // Repaint the next sibling that carries "°C" or "°F" — text node OR element
     let sib = span.nextSibling;
     while (sib) {
