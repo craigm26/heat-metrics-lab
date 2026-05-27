@@ -1,0 +1,8 @@
+{
+  "id": "niosh-2016-106",
+  "title": "NIOSH Criteria for a Recommended Standard: Occupational Exposure to Heat and Hot Environments",
+  "citation": "NIOSH (2016). DHHS Publication No. 2016-106. Revised Criteria.",
+  "url": "https://www.cdc.gov/niosh/docs/2016-106/",
+  "accessed_at": "2026-05-27",
+  "note": "Section 6 has the WBGT × work-intensity work/rest adjustment tables. The OSHA-NIOSH Heat App implements these. Federal NPRM 2024 cites this as the technical basis for proposed thresholds."
+}

@@ -1,0 +1,8 @@
+{
+  "id": "acgih-tlv",
+  "title": "TLVs and BEIs — Threshold Limit Values for Chemical Substances and Physical Agents (Heat Stress and Heat Strain)",
+  "citation": "ACGIH (2025). 2025 Edition.",
+  "url": "https://www.acgih.org/science/tlv-bei-guidelines/",
+  "accessed_at": "2026-05-27",
+  "note": "ACGIH Heat Stress and Heat Strain TLVs use WBGT crossed with work intensity, with adjustments for clothing and acclimatization. Updated annually."
+}
