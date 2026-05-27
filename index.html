@@ -174,9 +174,27 @@
     <!-- Ch 5 — Divergence map. All three live. -->
     <section class="chapter" data-chapter="5" data-act="divergence" data-metric="all"
              data-readings='{"air_temp_c":42.2,"hi_c":41.83,"wbgt_c":30.88}'>
-      <div class="chapter__inner">
+      <div class="chapter__inner chapter__inner--centerpiece">
         <h2 class="chapter__title">The divergence map</h2>
-        <p class="chapter__placeholder">2D divergence plot lands in Phase 4.</p>
+        <p class="chapter__lede">Where the three metrics agree, and where they don't. Each cell is painted by the metric most in warning territory.</p>
+        <div id="divergence-map" data-component="divergence-map"></div>
+
+        <p>Each cell in the map above represents one combination of air temperature and relative humidity. The color tells you which metric — air temperature, heat index, or WBGT — is most deeply in warning territory at that point. The colors are not decoration: they are the encoding. Cream means none of the three metrics have crossed a warning threshold. Slate blue means air temperature alone is the screaming alarm. Umber means heat index has breached its threshold more severely than the other two. Oxblood means WBGT has.</p>
+
+        <p>In the lower-left quadrant — cooler temperatures, any humidity — the cream dominates. All three metrics agree: no single warning is triggered. The eye can rest there. That is the "safe" zone, and its size shrinks as you move toward the upper right.</p>
+
+        <p>In the upper-right quadrant — humid and hot — heat index dominates. At 35 °C and 85% relative humidity, heat index reaches 50+ °C. The evaporative gradient has collapsed; the body cannot shed heat through sweat when the air is already nearly saturated. Air temperature alone underreports the strain. Heat index catches what the thermometer misses.</p>
+
+        <p>In the lower-right quadrant — dry and very hot — air temperature takes over as the dominant warning signal. At a desert 44 °C and 14% relative humidity, the heat index correction is small: dry air means evaporation still works, and the Rothfusz polynomial barely inflates the reading. Air temperature is not wrong here; it is reading the most direct threat accurately. WBGT would alarm a field inspector using a calibrated instrument in direct sun, but under the normalization used for this map — breach relative to threshold — heat index's much larger ceiling means it outpoints WBGT in the humidity-weighted majority of cells. The readout panel shows the WBGT-anchored work/rest call for every cell; hover to see it.</p>
+
+        <p>Toggle to indoor. The color distribution barely changes — removing solar radiation pulls the globe reading down, and the already-small WBGT warning zone disappears entirely. The umber heat-index region holds its shape because humidity-driven felt load is present whether or not the sun is shining. A warehouse at 35 °C and 65% relative humidity and a construction site at the same temperature and humidity look nearly the same in the colored map. What the toggle reveals is the WBGT readout difference: outdoor WBGT runs consistently higher than indoor WBGT at the same air conditions, because the 0.2 globe weight is carrying real solar load when you are outside. The numbers tell the story the colors can not.</p>
+
+        <p>"Feels like" is the wrong question when the question is whether the working body is shedding heat fast enough. Heat index answers "how uncomfortable is this air?" WBGT answers "how hard is the body working to stay in balance?" The map shows where the answers diverge most sharply.</p>
+
+        <aside class="side-dispatch">
+          The divergence map shows why a single regulatory threshold cannot cover all conditions. The OSHA Federal NPRM uses heat index as the trigger because heat index data are widely available from NWS; the actual safety call requires WBGT measurement on site. OSHA's Heat NEP uses HI ≥80 °F as its priority-day trigger precisely because it is the most widely reported ambient metric — not because it is the most physiologically complete one. <cite data-source="osha-nep">OSHA Heat NEP CPL 03-00-024-0</cite> <cite data-source="fed-nprm-2024">Federal NPRM 2024</cite>
+        </aside>
+
       </div>
     </section>
 
@@ -185,7 +203,21 @@
              data-readings='{"air_temp_c":42.2,"hi_c":41.83,"wbgt_c":30.88}'>
       <div class="chapter__inner">
         <h2 class="chapter__title">Where each metric fails</h2>
-        <p class="chapter__placeholder">Three blind-spot cards land in Phase 4.</p>
+        <p class="chapter__lede">An honest accounting. Each metric was built to answer a specific question. None was built to be a universal oracle.</p>
+        <div id="blind-spot-cards" data-component="blind-spot-cards"></div>
+
+        <p>Each card above lists what that metric was not designed to see. The limits are not flaws — they reflect the design constraints of instruments built for specific purposes. A wall thermometer was designed for weather observation, not occupational safety. The Rothfusz heat-index polynomial was fit to forecast comfort for a pedestrian in shade, not for a construction worker in direct sun wearing PPE. WBGT was designed to predict heat casualties on a military training ground — a good proxy for occupational settings, but still missing variables that a full physiological model would need.</p>
+
+        <p>The right way to think about them is as a layered sensor system, not as competitors. Air temperature provides screening: if it is cool, none of the other metrics will alarm. Layer heat index for humidity-aware comfort warnings: if the air is warm and humid, the felt load rises. Escalate to WBGT for jobsite work/rest calls: if WBGT is high enough to cross NIOSH thresholds, the body's heat balance is under measurable strain regardless of what the thermometer says.</p>
+
+        <p>One variable is hidden across all three metrics: time of exposure. None of them captures how long a worker has been in the heat. A WBGT reading at 28 °C matters differently for a worker who has been outdoors for six hours than for one who arrived fifteen minutes ago. Acclimatization protocols — the NIOSH recommendation to ramp up heat exposure over the first seven to fourteen days — address this separately, because the numbers alone cannot.</p>
+
+        <p>The next two chapters show how to use this in practice: first with a sandbox calculator where you can enter your own conditions, then with a live query to the National Weather Service for current conditions at any U.S. station.</p>
+
+        <aside class="side-dispatch">
+          Even with a "good" WBGT reading, the safety call still depends on work intensity (light, moderate, heavy, very heavy), clothing adjustment factor, and worker acclimatization status. NIOSH 2016-106 §6 has the full adjustment tables; ACGIH updates its TLV each year. The OSHA-NIOSH Heat Safety Tool embeds these tables and is the fastest path from a field reading to a work/rest call. <cite data-source="niosh-2016-106">NIOSH 2016-106</cite> <cite data-source="acgih-tlv">ACGIH 2025 TLV</cite>
+        </aside>
+
       </div>
     </section>
 

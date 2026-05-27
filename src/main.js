@@ -7,12 +7,16 @@
 //   4. temp-text: walks the DOM and wraps inline °C literals
 //   5. citation-chips: upgrades <cite data-source="..."> elements (no-op if none present)
 //   6. scenario-flipper: Ch 4 centerpiece — fetches 5 scenario JSONs + renders chip row
+//   7. divergence-map: Ch 5 centerpiece — 2D air×RH plot, dominant-metric region painting
+//   8. blind-spot-cards: Ch 6 — three parallel cards, what each metric doesn't measure
 import { initTempToggle } from "./components/temp-toggle.js";
 import { initThreeNumberStrip } from "./components/three-number-strip.js";
 import { initChapterObserver } from "./components/chapter-observer.js";
 import { initTempText } from "./components/temp-text.js";
 import { initCitationChips } from "./components/citation-chip.js";
 import { initScenarioFlipper } from "./components/scenario-flipper.js";
+import { initDivergenceMap } from "./components/divergence-map.js";
+import { initBlindSpotCards } from "./components/blind-spot-cards.js";
 
 function boot() {
   initTempToggle();
@@ -21,6 +25,8 @@ function boot() {
   initTempText();
   initCitationChips();
   initScenarioFlipper();
+  initDivergenceMap();
+  initBlindSpotCards();
   // Visible boot marker for sanity-check in DevTools
   console.info("heat-metrics-lab — phase 4 booted");
 }
