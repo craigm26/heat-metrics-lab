@@ -55,11 +55,29 @@ _To be filled in as each phase ships — one section per phase below._
 
 ### Phase 0 observations
 
-_To come._
+Bootstrap was uneventful but surfaced one structural finding about subagent-driven dev on Claude Code: **plugin installs require slash commands and cannot be invoked from a subagent.** `/plugin install scrollytelling@doodledood` and the playground/session-report installs had to be handed back to the operator as a side-channel action. On the Google side, Antigravity 2.0's Skills panel handles plugin enablement through the IDE chrome and is similarly out-of-band for agents; no clear winner — both surfaces require operator interaction for one-time setup steps.
+
+Phase 0 cost: 5 commits via a single Haiku implementer dispatch (~3 min). Spec + quality review (Haiku + Haiku) caught two issues — broken anchor links in PROJECT.md (`#phase-3-act-i-anatomy-ch-03` referencing headings that don't exist in the plan file because the plan uses "Content + Diagrams" not "Anatomy") and a duplicated reduced-motion principle in DESIGN.md. Both fixed via one fix-subagent dispatch.
 
 ### Phase 1 observations
 
-_To come._
+**The big finding of this phase came from the advisor, before any code shipped.** The plan's outdoor-WBGT formula `Tg = Ta + 0.0345 * S / wind_ms^0.4` was described as "matches Liljegren 2008 within ~1 °C." Empirical check against five published Liljegren reference cases showed it actually produced WBGT readings **3-7 °F too high** — RMSE 6.68 °F against an 0.5 °F drift gate. A 30-minute tuning pass replaced it with `Tg = Ta + 0.0125 * S / wind_ms^0.3` (RMSE 1.37 °F). The plan was amended in commit `9ccb9e7` before any implementer touched the formula.
+
+This is a meaningful devrel data point. On the Google side (heat-protein-lab), formulas were either lookup-table values from PDB/HPA/ClinVar (via Google Science Skills) or hand-written matplotlib plotting code reviewed visually. No equivalent "is this formula even right" sanity check happened during heat-protein-lab. The advisor's pre-implementation review is a Claude-side affordance that meaningfully saves rework.
+
+Three implementer dispatches in Phase 1 (A: Python + reference table + tuning notes; B: JS TDD on `src/metrics.js`; C: drift script + CI workflow). All three landed cleanly with one APPROVED + two APPROVED_WITH_FOLLOWUPS verdicts (FOLLOWUPS were MINOR doc polish, deferred).
+
+**Drift gate result: JS-vs-Python is bit-for-bit identical across all 24 check-rows.** Max delta vs reference values: 0.005 °C = 0.009 °F. That's a 56× safety margin against the 0.5 °F gate. The line-for-line port discipline (with the implementer dispatch prompt explicitly calling it out) produced a perfect translation.
+
+Token use, approximate (full numbers come from `session-report` at end-of-build): Dispatch A ~50k, Dispatch B ~36k, Dispatch C ~37k. Reviewers (Haiku) ~70k + ~72k for spec/quality on A; ~71k for quality on B; inline verification on C. Total Phase 1 ~340k tokens; cheap.
+
+Skill stack used in Phase 1:
+- `superpowers:writing-plans` (this plan)
+- `superpowers:subagent-driven-development` (the dispatch ceremony)
+- `superpowers:test-driven-development` (Dispatch B's red→green cycle)
+- `advisor` (caught the WBGT formula bug before code)
+
+`scrollytelling`, `playground`, `session-report` not yet exercised (Phase 2+).
 
 ### Phase 2 observations
 
