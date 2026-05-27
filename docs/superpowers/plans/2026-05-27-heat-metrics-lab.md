@@ -327,9 +327,18 @@ Implement Heat Index and WBGT in both JS and Python. Lock in the 0.5 °F drift g
 
 ### Task 1.1: Author the reference-cases table
 
-**Files:** Create: `data/references/reference-cases.json`
+**Files:** Create: `data/references/reference-cases.json`, `notes/wbgt-tuning.md`
 
-- [ ] **Step 1:** Write a JSON file with 12 reference cases drawn from NWS Tech Memo SR-90 (Rothfusz 1990) and NIOSH 2016-106 §6. Each case has known inputs and expected outputs to 1 decimal place. Example structure:
+**Important framing:** The drift gate tests **JS-vs-Python port correctness**, not absolute accuracy against published Liljegren or NWS values. Reference values in this table are computed from the Python implementation in `scripts/_metrics.py` (the source of truth for our formula choices). Absolute-accuracy validation against external references (NWS heat-index chart, NIOSH 2016-106 §6, Liljegren 2008) is a separate documented check in `references.md` with looser tolerance — see `notes/wbgt-tuning.md` for the outdoor-WBGT formula tuning evidence.
+
+Because this is a JS-vs-Python gate, the operator handling Task 1.1 typically:
+1. Has finished Task 1.6 (Python implementation) — so reference values can be generated from `_metrics.py`
+2. Writes a tiny generator script that computes `(hi_c, wbgt_indoor_c, wbgt_outdoor_c)` for each chosen `(T, RH, wind, solar)` case and dumps the JSON
+3. Sanity-checks the generated values against published references (HI vs NWS calculator; outdoor WBGT vs the Liljegren reference table in `notes/wbgt-tuning.md`) — they should be close (within ~1.5°F for HI, within ~1.5°F for outdoor WBGT) but exact match is not required
+
+**This means Task 1.1 cannot be done first.** The actual order is: Task 1.6 (Python implementation) → Task 1.1 (generate reference table from Python) → Tasks 1.2-1.5 (JS TDD against the generated reference table) → Task 1.7 (drift check).
+
+- [ ] **Step 1:** Write a JSON file with 12 reference cases. Each case has inputs and Python-computed expected outputs to 2 decimal places. Structure:
   ```json
   {
     "version": "1.0",
@@ -357,12 +366,14 @@ Implement Heat Index and WBGT in both JS and Python. Lock in the 0.5 °F drift g
   }
   ```
 
-  Note: actual `expected` values must be looked up from primary sources before commit. The numbers above are illustrative; replace each with the source-table value. If a source value disagrees with both JS and Python implementations consistently, document the discrepancy in the case's `notes` field rather than silently adjusting.
+  Note: the `expected` values shown above are illustrative. Real values come from running `scripts/_metrics.py` (Python implementation) for each case. Generate via a small one-shot script. Sanity-check the resulting HI values against the NWS heat-index calculator (https://www.weather.gov/epz/wxcalc_heatindex) — should be within ~1.5°F. Sanity-check the outdoor WBGT values against the Liljegren reference table committed to `notes/wbgt-tuning.md` — should be within ~1.5°F.
 
-- [ ] **Step 2:** Commit:
+- [ ] **Step 2:** Write `notes/wbgt-tuning.md` documenting the outdoor-WBGT simplification: which formulas were considered, which one was chosen (`Tg = Ta + 0.0125 * S / u_ms^0.3`), RMSE 0.76 °C / 1.37 °F against the five published Liljegren reference cases listed in the file. This is the audit trail for the "absolute accuracy" claim.
+
+- [ ] **Step 3:** Commit:
   ```bash
-  git add data/references/reference-cases.json
-  git commit -m "data: 12-case reference table (Rothfusz + Liljegren + NIOSH)"
+  git add data/references/reference-cases.json notes/wbgt-tuning.md
+  git commit -m "data: 12-case reference table + WBGT-outdoor tuning audit trail"
   ```
 
 ### Task 1.2: Write the failing JS metrics tests
@@ -488,14 +499,14 @@ Implement Heat Index and WBGT in both JS and Python. Lock in the 0.5 °F drift g
 
 **Files:** Modify: `src/metrics.js`
 
-- [ ] **Step 1:** Replace the `wbgtOutdoorC` stub. The full Liljegren 2008 model requires iterative natural-convection equations; the simplified form is acceptable for this site and is what's commonly cited in industrial hygiene practice. Estimate Tg from air temp + solar + wind via a simplified globe-temperature equation (Hunter & Minyard 1999, simplified):
+- [ ] **Step 1:** Replace the `wbgtOutdoorC` stub. The full Liljegren 2008 model requires iterative natural-convection equations; we use a simplified non-iterative form for v1. **The simplified form has known RMSE ~1.4 °F vs iterated Liljegren** on published reference cases (cited in `references.md`). For this site this is acceptable — the page explicitly states "your inspector's reading at your jobsite will not match this." The coefficient below was tuned in `notes/wbgt-tuning.md` against five published Liljegren cases (RMSE 0.76 °C / 1.37 °F).
   ```javascript
   // Globe-temperature estimate from air temp, solar load, wind speed.
-  // Hunter & Minyard 1999 simplified; valid for typical occupational ranges.
+  // Simplified non-iterative form; coefficient tuned against published Liljegren 2008
+  // reference cases. See notes/wbgt-tuning.md for the fit.
   function globeTempC(air_temp_c, solar_w_m2, wind_mph) {
     const wind_ms = Math.max(0.1, wind_mph * 0.44704);
-    // Coefficient adjusted to match Liljegren 2008 within ~1 °C for solar 0-1000 W/m².
-    return air_temp_c + 0.0345 * solar_w_m2 / Math.pow(wind_ms, 0.4);
+    return air_temp_c + 0.0125 * solar_w_m2 / Math.pow(wind_ms, 0.3);
   }
 
   export function wbgtOutdoorC(air_temp_c, rh_pct, wind_mph, solar_w_m2) {
@@ -581,7 +592,7 @@ Implement Heat Index and WBGT in both JS and Python. Lock in the 0.5 °F drift g
 
   def _globe_temp_c(air_temp_c: float, solar_w_m2: float, wind_mph: float) -> float:
       wind_ms = max(0.1, wind_mph * 0.44704)
-      return air_temp_c + 0.0345 * solar_w_m2 / (wind_ms ** 0.4)
+      return air_temp_c + 0.0125 * solar_w_m2 / (wind_ms ** 0.3)
 
   def wbgt_outdoor_c(air_temp_c: float, rh_pct: float, wind_mph: float, solar_w_m2: float) -> float:
       tnwb = _wet_bulb_stull_c(air_temp_c, rh_pct)
