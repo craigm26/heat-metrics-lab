@@ -813,6 +813,30 @@ cite.citation-chip:focus-visible {
 }
 .live-nws__error { color: var(--wbgt); }
 
+.live-nws__detect {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 5px;
+  padding: 8px 14px;
+  cursor: pointer;
+  margin-bottom: var(--space-3);
+  transition: background-color 0.15s ease;
+}
+.live-nws__detect:hover { background: var(--ink-soft); border-color: var(--ink-soft); }
+.live-nws__detect:focus-visible { outline: 2px solid var(--wbgt); outline-offset: 2px; }
+
+.live-nws__station {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+  margin: var(--space-2) 0 var(--space-3) 0;
+  letter-spacing: 0.01em;
+}
+
 .live-nws__meta {
   font-family: var(--font-ui);
   font-size: 0.8125rem;

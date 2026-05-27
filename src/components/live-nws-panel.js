@@ -21,6 +21,7 @@ const state = {
   current: null,   // { air_temp_c, rh_pct, wind_mph, solar_w_m2_estimate, hi_c, wbgt_c, time, sky_cover_pct }
   forecast: null,  // [{ time, air_temp_c, hi_c, wbgt_c, ... }, ...] for next 6 hours
   inputDraft: null, // last raw input the user typed; preserved across parse-fail re-renders
+  station: null,   // { gridId, gridX, gridY, city, state, forecastOffice, timeZone, radarStation } from /points
 };
 
 export function initLiveNwsPanel() {
@@ -47,6 +48,11 @@ export function initLiveNwsPanel() {
     const submit = e.target.closest('[data-action="submit"]');
     if (submit) {
       await handleSubmit(root);
+      return;
+    }
+    const detect = e.target.closest('[data-action="detect"]');
+    if (detect) {
+      await detectLocation(root);
     }
   });
 
@@ -99,12 +105,48 @@ function parseLatLng(raw) {
   return { lat, lng };
 }
 
+function detectLocation(root) {
+  return new Promise((resolve) => {
+    if (!("geolocation" in navigator)) {
+      state.error = "This browser doesn't expose geolocation. Pick a preset or enter coordinates.";
+      render(root);
+      resolve();
+      return;
+    }
+    state.loading = true;
+    state.error = null;
+    render(root);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        await loadCoords(root, pos.coords.latitude, pos.coords.longitude);
+        resolve();
+      },
+      (err) => {
+        state.loading = false;
+        if (err.code === err.PERMISSION_DENIED) {
+          state.error = "Location permission denied. Pick a preset or enter coordinates below.";
+        } else if (err.code === err.POSITION_UNAVAILABLE) {
+          state.error = "Couldn't determine your location. Pick a preset or enter coordinates below.";
+        } else if (err.code === err.TIMEOUT) {
+          state.error = "Location request timed out. Pick a preset or enter coordinates below.";
+        } else {
+          state.error = `Location error: ${err.message}`;
+        }
+        render(root);
+        resolve();
+      },
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+    );
+  });
+}
+
 async function loadCoords(root, lat, lng) {
   state.coords = { lat, lng };
   state.loading = true;
   state.error = null;
   state.current = null;
   state.forecast = null;
+  state.station = null;
   state.inputDraft = null;
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.coords)); } catch {}
   render(root);
@@ -118,6 +160,20 @@ async function loadCoords(root, lat, lng) {
     const point = await pointResp.json();
     const forecastUrl = point?.properties?.forecastHourly;
     if (!forecastUrl) throw new Error("NWS response missing forecastHourly URL");
+
+    // Capture the gridpoint metadata for display.
+    const pp = point.properties || {};
+    const rel = pp.relativeLocation?.properties || {};
+    state.station = {
+      gridId: pp.gridId || null,
+      gridX: pp.gridX ?? null,
+      gridY: pp.gridY ?? null,
+      city: rel.city || null,
+      state: rel.state || null,
+      forecastOffice: pp.cwa || (pp.forecastOffice ? pp.forecastOffice.split("/").pop() : null),
+      timeZone: pp.timeZone || null,
+      radarStation: pp.radarStation || null,
+    };
 
     // Stage 2: hourly forecast
     const fcResp = await fetch(forecastUrl, {
@@ -246,8 +302,13 @@ function render(root) {
         ? `${state.coords.lat.toFixed(4)}, ${state.coords.lng.toFixed(4)}`
         : "");
 
+  const detectHtml = ("geolocation" in navigator)
+    ? `<button type="button" class="live-nws__detect" data-action="detect">Use my location</button>`
+    : "";
+
   root.innerHTML = `
     <div class="live-nws">
+      ${detectHtml}
       <div class="live-nws__controls">
         <input type="text" class="live-nws__input" data-action="coords-input"
                placeholder="lat, lng  (e.g. 33.45, -112.07)"
@@ -260,6 +321,20 @@ function render(root) {
     </div>
   `;
   initCitationChips(root);
+}
+
+function renderStation() {
+  const s = state.station;
+  if (!s) return "";
+  const place = (s.city && s.state) ? `${s.city}, ${s.state}` : null;
+  const gridpoint = (s.gridId && s.gridX != null && s.gridY != null)
+    ? `${s.gridId} ${s.gridX},${s.gridY}` : null;
+  const office = s.forecastOffice ? `forecast office ${s.forecastOffice}` : null;
+  const radar = s.radarStation ? `radar ${s.radarStation}` : null;
+  const tz = s.timeZone ? `${s.timeZone}` : null;
+  const parts = [place, gridpoint, office, radar, tz].filter(Boolean);
+  if (!parts.length) return "";
+  return `<p class="live-nws__station">NWS gridpoint: ${parts.map(escapeHtml).join(" · ")}.</p>`;
 }
 
 function renderResult() {
@@ -291,6 +366,7 @@ function renderResult() {
       wind ${c.wind_mph.toFixed(1)}&nbsp;mph,
       estimated solar ${c.solar_w_m2_estimate.toFixed(0)}&nbsp;W/m&#178;.
     </p>
+    ${renderStation()}
   `;
 
   const chartHtml = renderChart(f);
