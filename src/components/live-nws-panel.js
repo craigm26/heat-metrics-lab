@@ -20,6 +20,7 @@ const state = {
   error: null,
   current: null,   // { air_temp_c, rh_pct, wind_mph, solar_w_m2_estimate, hi_c, wbgt_c, time, sky_cover_pct }
   forecast: null,  // [{ time, air_temp_c, hi_c, wbgt_c, ... }, ...] for next 6 hours
+  inputDraft: null, // last raw input the user typed; preserved across parse-fail re-renders
 };
 
 export function initLiveNwsPanel() {
@@ -45,16 +46,7 @@ export function initLiveNwsPanel() {
     }
     const submit = e.target.closest('[data-action="submit"]');
     if (submit) {
-      const inp = root.querySelector('input[data-action="coords-input"]');
-      if (!inp) return;
-      const parsed = parseLatLng(inp.value);
-      if (!parsed) {
-        state.error = "Couldn't parse lat,lng — try a format like '33.45, -112.07'";
-        state.coords = null;
-        render(root);
-        return;
-      }
-      await loadCoords(root, parsed.lat, parsed.lng);
+      await handleSubmit(root);
     }
   });
 
@@ -63,16 +55,37 @@ export function initLiveNwsPanel() {
     const inp = e.target.closest('input[data-action="coords-input"]');
     if (!inp) return;
     e.preventDefault();
-    const parsed = parseLatLng(inp.value);
-    if (!parsed) {
-      state.error = "Couldn't parse lat,lng — try a format like '33.45, -112.07'";
-      render(root);
-      return;
-    }
-    await loadCoords(root, parsed.lat, parsed.lng);
+    await handleSubmit(root);
   });
 
   window.addEventListener("temp-unit-changed", () => render(root));
+}
+
+async function handleSubmit(root) {
+  const inp = root.querySelector('input[data-action="coords-input"]');
+  if (!inp) return;
+  const raw = inp.value.trim();
+  // Empty input: refresh the saved location if we have one; else prompt gently.
+  if (!raw) {
+    if (state.coords) {
+      await loadCoords(root, state.coords.lat, state.coords.lng);
+      return;
+    }
+    state.error = "Enter coordinates above or pick a preset below.";
+    state.inputDraft = "";
+    render(root);
+    return;
+  }
+  const parsed = parseLatLng(raw);
+  if (!parsed) {
+    // Preserve what the user typed AND the previous successful location.
+    state.error = "Couldn't parse lat,lng — try a format like '33.45, -112.07'";
+    state.inputDraft = raw;
+    render(root);
+    return;
+  }
+  state.inputDraft = null;
+  await loadCoords(root, parsed.lat, parsed.lng);
 }
 
 function parseLatLng(raw) {
@@ -92,6 +105,7 @@ async function loadCoords(root, lat, lng) {
   state.error = null;
   state.current = null;
   state.forecast = null;
+  state.inputDraft = null;
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.coords)); } catch {}
   render(root);
 
@@ -224,9 +238,13 @@ function render(root) {
     <button type="button" class="live-nws__preset" data-preset="${i}">${escapeHtml(p.label)}</button>
   `).join("");
 
-  const initialValue = state.coords
-    ? `${state.coords.lat.toFixed(4)}, ${state.coords.lng.toFixed(4)}`
-    : "";
+  // Prefer the user's in-progress draft (so a bad-parse error doesn't erase what they typed),
+  // then fall back to the last successful coords.
+  const initialValue = state.inputDraft != null
+    ? state.inputDraft
+    : (state.coords
+        ? `${state.coords.lat.toFixed(4)}, ${state.coords.lng.toFixed(4)}`
+        : "");
 
   root.innerHTML = `
     <div class="live-nws">
