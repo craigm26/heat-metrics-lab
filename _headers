@@ -1,0 +1,15 @@
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:; connect-src 'self' https://api.weather.gov; font-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+
+/src/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/data/*
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/*.svg
+  Cache-Control: public, max-age=86400
